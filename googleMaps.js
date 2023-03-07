@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const XLSX = require('xlsx');
 
 let baseUrl = 'https://www.google.com.mx/maps/search/vivero+en+durango+OR+viveros+en+durango/@24.0229216,-104.6827443,13z/data=!4m2!2m1!6e6?authuser=0&hl=es'
-let totalResults = 120
+let totalResults = 10
 let fileName = 'viverosDurango.xlsx'
 let searchTerm = 'vivero en durango OR viveros en durango'
 //let typeOfPlace = 'Parque Ecoturístico'
@@ -124,7 +124,7 @@ async function autoScroll(page){
                     photo = document.querySelector('.aoRNLd.kn2E5e.NMjTrf.lvtCsd img').currentSrc
                 }
 
-                
+
                 let dataSize = document.querySelectorAll('.Io6YTe.fontBodyMedium').length                
                 if(document.querySelector('.Io6YTe.fontBodyMedium') === null){
                         phone = 'No cuenta con teléfono'  
