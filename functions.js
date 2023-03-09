@@ -1,8 +1,3 @@
-// function createAriaLabel(buscar){
-//     let ariaLabel = `div[aria-label="Resultados de ${buscar}"]`
-//     return ariaLabel
-// }
-
 
 // async function getiframe(page){
 //     let document = page
