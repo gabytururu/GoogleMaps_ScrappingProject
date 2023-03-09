@@ -59,6 +59,7 @@ async function autoScroll(page,searchTerm){
        
         const viveroSpecifics = await page.evaluate((typeOfPlace)=>{
             const viveroInfo ={}
+            
             const missingData= document.querySelectorAll('span.DkEaL')
             const missingDataArr=[]
             for(let dataPoint of missingData) {
@@ -69,28 +70,21 @@ async function autoScroll(page,searchTerm){
             function checkData (array){
                 if(array.find(arrEl => arrEl.includes('teléfono'))){
                     resultPhone = true
-                    }else {
-                        resultPhone = false
-                    }
-                
-                    if (array.find(arrEl => arrEl.includes('web'))){
-                        resultWeb = true
-                    }else{
-                    resultWeb = false
-                    }
-                
-                    if (resultPhone && resultWeb){
-                        bothResults = true
-                    }else {
-                        bothResults = false
-                    }
-                    return bothResults
-            }
+                }else {
+                    resultPhone = false
+                }            
+                if (array.find(arrEl => arrEl.includes('web'))){
+                    resultWeb = true
+                }else{
+                resultWeb = false
+                }            
+                if (resultPhone && resultWeb){
+                    bothResults = true
+                }else {
+                    bothResults = false
+                }
 
-            if(missingDataArr.find(missingData => missingData.includes('foto'))|| document.querySelector('.aoRNLd.kn2E5e.NMjTrf.lvtCsd img') === null){
-                photo = 'no hay foto'
-            }else{
-                photo = document.querySelector('.aoRNLd.kn2E5e.NMjTrf.lvtCsd img').currentSrc
+                return bothResults
             }
 
             let dataSize = document.querySelectorAll('.Io6YTe.fontBodyMedium').length                
@@ -131,13 +125,35 @@ async function autoScroll(page,searchTerm){
                     city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[3].textContent 
             };
 
+            function searchWeb(viveroWeb){
+                if(viveroWeb.includes('no disponible')){
+                    return 'web no disponible'                        
+                }else{
+                    return `<a href="${viveroWeb}">Web del vivero ${viveroInfo.name}</a>`
+                }                  
+            }
+
+            if(missingDataArr.find(missingData => missingData.includes('foto'))|| document.querySelector('.aoRNLd.kn2E5e.NMjTrf.lvtCsd img') === null){
+                photo = 'no hay foto'
+            }else{
+                photo = document.querySelector('.aoRNLd.kn2E5e.NMjTrf.lvtCsd img').currentSrc
+            }
+
             let horarioArr =[]
             let horario = document.querySelectorAll('.mWUh3d')
             if (horario.length === 0 || document.querySelector('.mWUh3d') === null ){
                 horarioArr.push('No se cuenta con horario oficial')
             }else{
-                horario.forEach(el => horarioArr.push(el.ariaLabel))                  
+                horario.forEach(el => horarioArr.push(el.ariaLabel)) 
             }
+              
+            horarioArr.forEach(el => {
+                let string = el.toString()
+               
+                string.replace(', Copiar el horario', '')
+               
+            })
+
 
             let totalComments = document.querySelectorAll('.MyEned span.wiI7pd').length
             if ( totalComments < 1 || document.querySelector('.MyEned span.wiI7pd') === null ) {
@@ -152,20 +168,15 @@ async function autoScroll(page,searchTerm){
                 stars = document.querySelectorAll('.fontBodyMedium.dmRWX')[0].innerText.split('\n')[0].replace(',','.')
             }     
 
-            function searchWeb(viveroWeb){
-                if(viveroWeb.includes('no disponible')){
-                    return 'web no disponible'                        
-                }else{
-                    return `<a href="${viveroWeb}">Web del vivero ${viveroInfo.name}</a>`
-                }                  
-            }
+
 
            
                 viveroInfo.name = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[1].textContent 
                 viveroInfo.address= address 
                 viveroInfo.phone= phone
                 viveroInfo.web = web
-                viveroInfo.horario = horarioArr.toString().replace('Copiar el horario','')
+                // viveroInfo.horario = horarioArr.toString().replace('Copiar el horario','')
+                viveroInfo.horario = horarioArr
                 viveroInfo.cityClean = city.slice(8,)
                 viveroInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
                 viveroInfo.city= city
