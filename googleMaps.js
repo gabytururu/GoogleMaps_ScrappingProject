@@ -1,36 +1,12 @@
 const puppeteer = require('puppeteer');
 const XLSX = require('xlsx');
 
-let baseUrl = 'https://www.google.com.mx/maps/search/vivero+en+durango+OR+viveros+en+durango/@24.0229216,-104.6827443,13z/data=!4m2!2m1!6e6?authuser=0&hl=es'
-let totalResults = 10
-let fileName = 'viverosDurango.xlsx'
-let searchTerm = 'vivero en durango OR viveros en durango'
-//let typeOfPlace = 'Parque Ecoturístico'
 
-// function createAriaLabel(buscar){
-//     let ariaLabel = `div[aria-label="Resultados de ${buscar}"]`
-//     return ariaLabel
-// }
-
-
-// async function getiframe(page){
-//     let document = page
-//     await page.click('img[alt="Compartir"]')
-//     await page.waitForSelector('button[aria-label="Insertar un mapa"]')
-//     await page.click('button[aria-label="Insertar un mapa"]')
-//    // await page.waitForSelector('input.yA7sBe')
-//     const iframe = await page.evaluate(()=>{
-//         return document.querySelector('input.yA7sBe').value
-//     })
-//     console.log(iframe)
-//     await page.click('button.AmPKde[aria-label="Cerrar"]')
-// }
-
-async function autoScroll(page){
+async function autoScroll(page, globalDistance){
     
     await page.evaluate(async()=>{
         do{
-            await new Promise ((resolve,reject,) =>{
+            await new Promise ((resolve,reject) =>{
                     let totalHeight = 0;
                     let distance = 300;                    
                     let timer = setInterval(()=>{
@@ -52,34 +28,47 @@ async function autoScroll(page){
     })    
 }
 
-
-(async()=>{
+//let totalResults = 10
+async function scrapping(){
+//(async()=>{
+    let baseUrl = 'https://www.google.com.mx/maps/search/vivero+en+durango+OR+viveros+en+durango/@24.0229216,-104.6827443,13z/data=!4m2!2m1!6e6?authuser=0&hl=es'
     
+    let fileName = 'viverosDurango.xlsx'
+    let searchTerm = 'vivero en durango OR viveros en durango'
+    //let totalResults = 10
+    //let typeOfPlace = 'Parque Ecoturístico'
+    
+   
     const browser = await puppeteer.launch({headless:false}) //
     const page = await browser.newPage()
+    //const globalDistance = 300
     
     
     await page.setViewport({width:1300,height:900});
     await page.goto(`${baseUrl}`,{waitUntil: 'domcontentloaded'})
     await autoScroll(page)
    
-
-    const viverosLinks = await page.evaluate(()=>{
+    const viverosLinks = await page.evaluate((rorris33)=>{
+        let totalResults = 10
         const dataCardsArr = document.querySelectorAll('a.hfpxzc')
         const viverosLinks =[]
+        console.log(totalResults)
         dataCardsArr.forEach((element) => {
             viverosLinks.push(element.href)            
         })
-        return viverosLinks
-    })
-
+        console.log(totalResults)
+        let resultado = 'ver mis argumentos'+ rorris33[0] + rorris33[1]
+        //return viverosLinks.slice(0,totalResults)
+        return resultado
+    }, 'si a huevo si', 'otra cosita')
+    //console.log(resultado)
     console.log('viverosLinks', viverosLinks)
     console.log('viverosLinks Length', viverosLinks.length)
 
-    let viverosCutLinks = viverosLinks.slice(0,totalResults)
+    //let viverosCutLinks = viverosLinks.slice(0,totalResults)
     const viverosData = []
     let acct = 0
-    for (let link of viverosCutLinks){
+    for (let link of viverosLinks){
         await page.goto(link)    
        // await getiframe(page) 
 
@@ -229,4 +218,7 @@ async function autoScroll(page){
     let worksheet = XLSX.utils.json_to_sheet(viverosData)
     XLSX.utils.book_append_sheet(workbook,worksheet,'sheet1')
     XLSX.writeFile(workbook, fileName)
-})()
+// })()
+}
+
+scrapping()
