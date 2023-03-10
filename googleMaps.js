@@ -168,15 +168,22 @@ async function autoScroll(page,searchTerm){
                 newCleanArray.push(joinet)
                 })
             
-                return newCleanArray
-                
+                return newCleanArray                
             }
 
             const cleanHorarioArray = cleanHorario(horarioArr)
 
+            const horarioOrganized = {
+                lunes: cleanHorarioArray.find(el=>el.includes('Lunes')),
+                martes: cleanHorarioArray.find(el => el.includes('Martes')),
+                miercoles: cleanHorarioArray.find(el => el.includes('Miércoles')),
+                jueves: cleanHorarioArray.find(el => el.includes('Jueves')),
+                viernes: cleanHorarioArray.find(el => el.includes('Viernes')),
+                sabado: cleanHorarioArray.find(el => el.includes('Sábado')),
+                domingo: cleanHorarioArray.find(el => el.includes('Domingo')),
+            }
 
-
-
+            //-------------CANTIDAD_RESEÑAS STARTS --------------//
             let totalComments = document.querySelectorAll('.MyEned span.wiI7pd').length
             if ( totalComments < 1 || document.querySelector('.MyEned span.wiI7pd') === null ) {
                 comments = 'no hay opiniones'
@@ -189,39 +196,42 @@ async function autoScroll(page,searchTerm){
                 cantidadResenas = document.querySelectorAll('.fontBodyMedium.dmRWX')[0].innerText.split('\n')[1].replace(' reseñas','').replace(' reseña', '').replace('(','').replace(')','')
                 stars = document.querySelectorAll('.fontBodyMedium.dmRWX')[0].innerText.split('\n')[0].replace(',','.')
             }     
+            //-------------CANTIDAD_RESEÑAS ENDS --------------//
 
-            function spinnedText(textOptionsArr){
-                let selectedText = textOptionsArr[Math.floor(Math.random() * textOptionsArr.length)]
-                return selectedText
-            }
 
-            const typeOfPlaceArr = [
-                'Parque Ecoturístico', 'Centro Ecoturístico','Parque Ecoturístico', 'Sitio Ecoturístico', 'Parque Ecológico','Parque Ecoturístico', 'Parque Natural','Parque Ecoturístico', 'Centro de Ecoturismo', 'Parque de Ecoturismo' 
-            ]
-            const comoLlegarArr = [
-                'Para llegar, puedes símplemente colocar esta dirección en el googleMaps o Waze o apoyarte en este ',
-                'Para ir a este lugar usar esa dirección en un gps o ayudarte con este ',
-                'Para encontrar esta dirección, puedes usar un navegador como el waze o este ',
-                'Para ir a este sitio, coloca esta dirección en una herramienta de navegación o apóyate con este ',
-                'Para ir a este centro manejando, puedes usar esta dirección oficial con tu google maps o usando este  ',
-                'LLegar al lugar es bastante sencillo. Símplemente coloca la dirección en una app con gps, o apóyate con este ',
-                'Puedes ir a este lugar sin problemas manejando, sólo coloca su dirección oficial en waze, google maps o equivalente, o guíate con este ',
-                'Para ir a este parque, simplemente basta con colocar la dirección en una app de navegación o siguiendo este ',
-                'Podrás llegar manejando sin ningún problema, símplemente usa la dirección en una app como waze o googleMaps, o usa este enlace al ',
-            ]
-            const aclaracionHorariosArr =[
-                'Aunque estos horarios están oficialmente vigentes, siempre es bueno consultar sus sitios de contacto y redes oficiales antes de visitarlos, por cualquier cambio extraordinario que pudieran tener.',
-                'A pesar de contar con horarios oficiales, te recomendamos siempre visitar sus sitios de contacto y redes oficiales antes de ir al lugar, así podrás identificar cualquier cambio extraordinario que hayan tenido.',
-                'Siempre es importante -aún si cuentas con estos horarios oficiales-, revisar en sus redes sociales y medios de contacto antes de ir. Así podrás asegurarte de que no hayan tenido ningún cambio de horario o logístico de último momento.',
-                'Aunque estos horarios sean oficialmente vigentes, nunca está de más que antes de lanzarte, revises en sus redes sociales o contactos digitales que no haya habido ningún cambio logístico extraordinario en sus horarios de apertura y cierre.',
-                'Aunque cuentes ya con los horarios oficiales de apertura de este lugar, siempre te recomendamos que antes de ir eches un ojito a sus redes sociales y vías de contacto, para asegurarte de que no hayan tenido algún cambio logístico de última hora',
-            ]
-            const placeIntroArr = [
-                `Este ${typeOfPlace} tiene ${stars} de calificación promedio, a partir de las más de ${cantidadResenas} opiniones de sus visitantes... ¿nada mal no?. Es por eso que es parte de esta lista de los ${typeOfPlace} mejor calificados de ${corePlace}. Con este respaldo estamos más que seguras(os) que se trata  de un sitio que vas a disfrutar al Máximo. Así que ya sabes, si lo que buscas es naturaleza, el ${typeOfPlace} ${viveroInfo.name}en ${corePlace}, es sin duda una gran opción`,
-                `Bueno pues si eres de quienes ama estar en contacto con la naturaleza y andas por ${corePlace}, entonces no puedes perderte la experiencia de visitar el ${typeOfPlace} ${viveroInfo.name}. Con una calificación promedio de ${stars} estrellas de más de ${comments} visitantes, no tenemos duda de que se trata de un favorito de esta región. Así que nada...prepárate para sumergirte y disfrutar a tope de los paisajes naturales de ${corePlace}`,
-                `El ${typeOfPlace} ${viveroInfo.name} es una opción fantástica para tener una aventura natural en ${corePlace}. Su calificación promedio es de ${stars} respaldada por más de ${cantidadResenas}visitantes, así que no tenemos duda de que este lugar pertenece a la lista de los ${typeOfPlace} mejor rankeados de ${corePlace} y que se trata de uno de los principales atractivos naturales en la región. Así que ya sabes... ¿ganas de naturaleza?... pues el ${typeOfPlace} ${viveroInfo.name} es una grandísima opción.`,
-            ]
 
+            //-------------TEXT_SPINNER STARTS --------------//
+                function spinnedText(textOptionsArr){
+                    let selectedText = textOptionsArr[Math.floor(Math.random() * textOptionsArr.length)]
+                    return selectedText
+                }
+                const typeOfPlaceArr = [
+                    'Parque Ecoturístico', 'Centro Ecoturístico','Parque Ecoturístico', 'Sitio Ecoturístico', 'Parque Ecológico','Parque Ecoturístico', 'Parque Natural','Parque Ecoturístico', 'Centro de Ecoturismo', 'Parque de Ecoturismo' 
+                ]
+                const comoLlegarArr = [
+                    'Para llegar, puedes símplemente colocar esta dirección en el googleMaps o Waze o apoyarte en este ',
+                    'Para ir a este lugar usar esa dirección en un gps o ayudarte con este ',
+                    'Para encontrar esta dirección, puedes usar un navegador como el waze o este ',
+                    'Para ir a este sitio, coloca esta dirección en una herramienta de navegación o apóyate con este ',
+                    'Para ir a este centro manejando, puedes usar esta dirección oficial con tu google maps o usando este  ',
+                    'LLegar al lugar es bastante sencillo. Símplemente coloca la dirección en una app con gps, o apóyate con este ',
+                    'Puedes ir a este lugar sin problemas manejando, sólo coloca su dirección oficial en waze, google maps o equivalente, o guíate con este ',
+                    'Para ir a este parque, simplemente basta con colocar la dirección en una app de navegación o siguiendo este ',
+                    'Podrás llegar manejando sin ningún problema, símplemente usa la dirección en una app como waze o googleMaps, o usa este enlace al ',
+                ]
+                const aclaracionHorariosArr =[
+                    'Aunque estos horarios están oficialmente vigentes, siempre es bueno consultar sus sitios de contacto y redes oficiales antes de visitarlos, por cualquier cambio extraordinario que pudieran tener.',
+                    'A pesar de contar con horarios oficiales, te recomendamos siempre visitar sus sitios de contacto y redes oficiales antes de ir al lugar, así podrás identificar cualquier cambio extraordinario que hayan tenido.',
+                    'Siempre es importante -aún si cuentas con estos horarios oficiales-, revisar en sus redes sociales y medios de contacto antes de ir. Así podrás asegurarte de que no hayan tenido ningún cambio de horario o logístico de último momento.',
+                    'Aunque estos horarios sean oficialmente vigentes, nunca está de más que antes de lanzarte, revises en sus redes sociales o contactos digitales que no haya habido ningún cambio logístico extraordinario en sus horarios de apertura y cierre.',
+                    'Aunque cuentes ya con los horarios oficiales de apertura de este lugar, siempre te recomendamos que antes de ir eches un ojito a sus redes sociales y vías de contacto, para asegurarte de que no hayan tenido algún cambio logístico de última hora',
+                ]
+                const placeIntroArr = [
+                    `Este ${typeOfPlace} tiene ${stars} de calificación promedio, a partir de las más de ${cantidadResenas} opiniones de sus visitantes... ¿nada mal no?. Es por eso que es parte de esta lista de los ${typeOfPlace} mejor calificados de ${corePlace}. Con este respaldo estamos más que seguras(os) que se trata  de un sitio que vas a disfrutar al Máximo. Así que ya sabes, si lo que buscas es naturaleza, el ${typeOfPlace} ${viveroInfo.name}en ${corePlace}, es sin duda una gran opción`,
+                    `Bueno pues si eres de quienes ama estar en contacto con la naturaleza y andas por ${corePlace}, entonces no puedes perderte la experiencia de visitar el ${typeOfPlace} ${viveroInfo.name}. Con una calificación promedio de ${stars} estrellas de más de ${comments} visitantes, no tenemos duda de que se trata de un favorito de esta región. Así que nada...prepárate para sumergirte y disfrutar a tope de los paisajes naturales de ${corePlace}`,
+                    `El ${typeOfPlace} ${viveroInfo.name} es una opción fantástica para tener una aventura natural en ${corePlace}. Su calificación promedio es de ${stars} respaldada por más de ${cantidadResenas}visitantes, así que no tenemos duda de que este lugar pertenece a la lista de los ${typeOfPlace} mejor rankeados de ${corePlace} y que se trata de uno de los principales atractivos naturales en la región. Así que ya sabes... ¿ganas de naturaleza?... pues el ${typeOfPlace} ${viveroInfo.name} es una grandísima opción.`,
+                ]
+            //-------------TEXT_SPINNER ENDS---------------//
 
 
            
@@ -231,7 +241,8 @@ async function autoScroll(page,searchTerm){
                 viveroInfo.web = web
                 // viveroInfo.horario = horarioArr.toString().replace('Copiar el horario','')
                 //viveroInfo.horario = horarioArr
-                viveroInfo.horario = cleanHorarioArray
+                // viveroInfo.horario = cleanHorarioArray
+                viveroInfo.horario = horarioOrganized.toString()
                 viveroInfo.cityClean = city.slice(8,)
                 viveroInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
                 viveroInfo.city= city
@@ -256,9 +267,6 @@ async function autoScroll(page,searchTerm){
                                 <li>${viveroInfo.horario}</li>
                             </ul>
                         <p>${spinnedText(aclaracionHorariosArr)}</p>
-
-
-        
                     <p><b>Horarios Oficiales: </b>${viveroInfo.horario}</p>
                     <p><b>Sitio Web: </b>${searchWeb(viveroInfo.web)}</p>
                     <p><b>Ubicación: </b><a href='${viveroInfo.urlgMaps}'>Mapa del ${typeOfPlace} ${viveroInfo.name}</a></p>                        
