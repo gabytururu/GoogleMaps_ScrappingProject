@@ -242,7 +242,7 @@ async function autoScroll(page,searchTerm){
                 // viveroInfo.horario = horarioArr.toString().replace('Copiar el horario','')
                 //viveroInfo.horario = horarioArr
                 // viveroInfo.horario = cleanHorarioArray
-                viveroInfo.horario = horarioOrganized.toString()
+                viveroInfo.horario = horarioOrganized
                 viveroInfo.cityClean = city.slice(8,)
                 viveroInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
                 viveroInfo.city= city
@@ -264,7 +264,13 @@ async function autoScroll(page,searchTerm){
                     <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name}?</b></h3>
                         <p>Los horarios oficiales del ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name} son los siguientes:</p>
                             <ul>
-                                <li>${viveroInfo.horario}</li>
+                                <li>${viveroInfo.horario.lunes}</li>
+                                <li>${viveroInfo.horario.martes}</li>
+                                <li>${viveroInfo.horario.miercoles}</li>
+                                <li>${viveroInfo.horario.jueves}</li>
+                                <li>${viveroInfo.horario.viernes}</li>
+                                <li>${viveroInfo.horario.sabado}</li>
+                                <li>${viveroInfo.horario.domingo}</li>
                             </ul>
                         <p>${spinnedText(aclaracionHorariosArr)}</p>
                     <p><b>Horarios Oficiales: </b>${viveroInfo.horario}</p>
