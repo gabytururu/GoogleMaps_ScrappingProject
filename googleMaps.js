@@ -27,7 +27,7 @@ async function autoScroll(page,searchTerm){
 //async function scrapping(){
 (async()=>{
     let baseUrl = 'https://www.google.com.mx/maps/search/vivero+en+durango+OR+viveros+en+durango/@24.0229216,-104.6827443,13z/data=!4m2!2m1!6e6?authuser=0&hl=es'
-    let totalResults = 5
+    let totalResults = 2
     let fileName = 'viverosDurango.xlsx'
     let typeOfPlace = 'Parque Ecoturístico'
     let searchTerm = 'vivero en durango OR viveros en durango'
@@ -146,13 +146,34 @@ async function autoScroll(page,searchTerm){
             }else{
                 horario.forEach(el => horarioArr.push(el.ariaLabel)) 
             }
-              
-            horarioArr.forEach(el => {
-                let string = el.toString()
-               
-                string.replace(', Copiar el horario', '')
-               
-            })
+          
+            function cleanHorario(horarioArray){
+               const splitArray =              
+                horarioArray.map(el => {
+                    const cleanEl = el.replace(/,\sCopiar el horario/g,'')
+                    const lowerD = cleanEl.replace(/D/g,'d')
+                    const noColon = lowerD.replace(/,/g,'')
+                    const splitted = noColon.split('')
+                    return splitted
+                })
+                
+                for (let arr of splitArray){
+                    arr[0] = arr[0].toUpperCase()
+                }
+                
+                let newCleanArray = []
+                splitArray.forEach(el => {
+                let joinet = el.join('')
+                newCleanArray.push(joinet)
+                })
+            
+                return newCleanArray
+                
+            }
+
+            const cleanHorarioArray = cleanHorario(horarioArr)
+
+
 
 
             let totalComments = document.querySelectorAll('.MyEned span.wiI7pd').length
@@ -176,7 +197,8 @@ async function autoScroll(page,searchTerm){
                 viveroInfo.phone= phone
                 viveroInfo.web = web
                 // viveroInfo.horario = horarioArr.toString().replace('Copiar el horario','')
-                viveroInfo.horario = horarioArr
+                //viveroInfo.horario = horarioArr
+                viveroInfo.horario = cleanHorarioArray
                 viveroInfo.cityClean = city.slice(8,)
                 viveroInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
                 viveroInfo.city= city

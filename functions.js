@@ -23,6 +23,7 @@ let array = [
 ]
 
 function cleanHorario(horarioArray){
+    
     const splitArray = horarioArray.map(el => {
         const cleanEl = el.replace(/, Copiar el horario/g, '')
         const lowerD = cleanEl.replace(/D/g,'d')
