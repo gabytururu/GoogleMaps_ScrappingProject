@@ -28,6 +28,7 @@ async function autoScroll(page,searchTerm){
 (async()=>{
     let baseUrl = 'https://www.google.com.mx/maps/search/vivero+en+durango+OR+viveros+en+durango/@24.0229216,-104.6827443,13z/data=!4m2!2m1!6e6?authuser=0&hl=es'
     let totalResults = 2
+    let corePlace = 'Tabasco'
     let fileName = 'viverosDurango.xlsx'
     let typeOfPlace = 'Parque Ecoturístico'
     let searchTerm = 'vivero en durango OR viveros en durango'
@@ -57,7 +58,7 @@ async function autoScroll(page,searchTerm){
        // await getiframe(page) 
         await page.waitForSelector('.DUwDvf.fontHeadlineLarge span') 
        
-        const viveroSpecifics = await page.evaluate((typeOfPlace)=>{
+        const viveroSpecifics = await page.evaluate((typeOfPlace,corePlace)=>{
             const viveroInfo ={}
             
             const missingData= document.querySelectorAll('span.DkEaL')
@@ -189,6 +190,16 @@ async function autoScroll(page,searchTerm){
                 stars = document.querySelectorAll('.fontBodyMedium.dmRWX')[0].innerText.split('\n')[0].replace(',','.')
             }     
 
+            function spinnedText(textOptionsArr){
+                let selectedText = textOptionsArr[Math.floor(Math.random() * textOptionsArr.length)]
+                return selectedText
+            }
+
+            const typeOfPlaceArr = [
+                'Parque Ecoturístico', 'Centro Ecoturístico','Parque Ecoturístico', 'Sitio Ecoturístico', 'Parque Ecológico','Parque Ecoturístico', 'Parque Natural','Parque Ecoturístico', 'Centro de Ecoturismo', 'Parque de Ecoturismo' 
+            ]
+
+
 
 
            
@@ -207,11 +218,14 @@ async function autoScroll(page,searchTerm){
                 viveroInfo.opiniones = comments.toString()
                 viveroInfo.structuredData = `
                     <h2>${typeOfPlace} ${viveroInfo.name}</h2>
-                    <p><b>Dirección del ${typeOfPlace}: </b>${viveroInfo.address}</p>
+                    <p> ¿Estás buscando los mejores Parques Ecoturísticos en ${corePlace}? ¡Estás en el lugar correcto! Pues en este artículo vamos a presentarte cuáles son los  ${spinnedText(typeOfPlaceArr)} que han sido mejor evaluados en este estado. \n Para esto, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso entrevistas para poder determinar cuáles son los  ${spinnedText(typeOfPlaceArr)} que mejor calificación han recibido en ${corePlace} durante los últimos años. \n Con esta prueba social como respaldo, hoy te daremos los ${spinnedText(typeOfPlaceArr)} mejor calificados y te compartiremos su ubicación, medios oficiales de contacto, horarios y cómo llegar hasta ellos, junto con la calificación promedio con la que cuenta cada lugar. \n Así que prepárate y ¡a disfrutar del ecoturismo en ${corePlace}!</p>
+                    <h3><b>Dirección del ${typeOfPlace} ${viveroInfo.name}: </b></h3>
+                    <p>El ${typeOfPlace} se ubica en${viveroInfo.address}</p>
                     <p><b>Teléfono del ${typeOfPlace}: </b>${viveroInfo.phone}</p>
                     <p><b>Horarios Oficiales: </b>${viveroInfo.horario}</p>
                     <p><b>Sitio Web: </b>${searchWeb(viveroInfo.web)}</p>
-                    <p><b>Ubicación: </b><a href='${viveroInfo.urlgMaps}'>Mapa del ${typeOfPlace} ${viveroInfo.name}</a></p>                        `
+                    <p><b>Ubicación: </b><a href='${viveroInfo.urlgMaps}'>Mapa del ${typeOfPlace} ${viveroInfo.name}</a></p>                        
+                    `
                 //viveroInfo.iframe = document.querySelectorAll('.yA7sBe')[0].value
                 viveroInfo.photo = photo
                 viveroInfo.missingData = missingDataArr.toString()
@@ -219,7 +233,7 @@ async function autoScroll(page,searchTerm){
             
             
                 return viveroInfo
-        },typeOfPlace)
+        },typeOfPlace, corePlace)
 
         acct++
         viverosData.push({acct,...viveroSpecifics})
