@@ -239,30 +239,31 @@ async function autoScroll(page,searchTerm){
                 viveroInfo.address= address 
                 viveroInfo.phone= phone
                 viveroInfo.web = web
-                // viveroInfo.horario = horarioArr.toString().replace('Copiar el horario','')
-                //viveroInfo.horario = horarioArr
-                // viveroInfo.horario = cleanHorarioArray
                 viveroInfo.horario = horarioOrganized
+                //viveroInfo.horario = cleanHorarioArray
                 viveroInfo.cityClean = city.slice(8,)
                 viveroInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
                 viveroInfo.city= city
                 viveroInfo.stars =  stars
                 viveroInfo.CantidadResenas =  cantidadResenas
                 viveroInfo.opiniones = comments.toString()
+                viveroInfo.photo = photo
+                viveroInfo.articleIntro = `
+                    <p> ¿Estás buscando los mejores Parques Ecoturísticos en ${corePlace}? ¡Estás en el lugar correcto! Pues en este artículo vamos a presentarte cuáles son los  ${spinnedText(typeOfPlaceArr)} que han sido mejor evaluados en este estado. \n Para esto, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso entrevistas para poder determinar cuáles son los  ${spinnedText(typeOfPlaceArr)} que mejor calificación han recibido en ${corePlace} durante los últimos años. \n Con esta prueba social como respaldo, hoy te daremos los ${spinnedText(typeOfPlaceArr)} mejor calificados y te compartiremos su ubicación, medios oficiales de contacto, horarios y cómo llegar hasta ellos, junto con la calificación promedio con la que cuenta cada lugar. \n Así que prepárate y ¡a disfrutar del ecoturismo en ${corePlace}!</p>                    
+                    `
                 viveroInfo.structuredData = `
-                    <p> ¿Estás buscando los mejores Parques Ecoturísticos en ${corePlace}? ¡Estás en el lugar correcto! Pues en este artículo vamos a presentarte cuáles son los  ${spinnedText(typeOfPlaceArr)} que han sido mejor evaluados en este estado. \n Para esto, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso entrevistas para poder determinar cuáles son los  ${spinnedText(typeOfPlaceArr)} que mejor calificación han recibido en ${corePlace} durante los últimos años. \n Con esta prueba social como respaldo, hoy te daremos los ${spinnedText(typeOfPlaceArr)} mejor calificados y te compartiremos su ubicación, medios oficiales de contacto, horarios y cómo llegar hasta ellos, junto con la calificación promedio con la que cuenta cada lugar. \n Así que prepárate y ¡a disfrutar del ecoturismo en ${corePlace}!</p>
                     <h2><b>${typeOfPlace} ${viveroInfo.name}</b></h2>
-                      <p>${spinnedText(placeIntroArr)}</p>
-                    <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name}? </b></h3>
-                        <p>El ${spinnedText(typeOfPlaceArr)} se ubica en${viveroInfo.address}. ${spinnedText(comoLlegarArr)}<a href='${viveroInfo.urlgMaps}'>Mapa del ${typeOfPlace} ${viveroInfo.name}</a></p>
-                    <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name}?</b></h3>
-                        <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name} son: </p>
-                        <ul>
-                            <li><b>Teléfono:</b>${viveroInfo.phone}</li>
-                            <li><b>SitioWeb:</b>${searchWeb(viveroInfo.web)}</li>
-                        </ul>
-                    <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name}?</b></h3>
-                        <p>Los horarios oficiales del ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name} son los siguientes:</p>
+                        <p>${spinnedText(placeIntroArr)}</p>
+                        <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name}? </b></h3>
+                            <p>El ${spinnedText(typeOfPlaceArr)} se ubica en${viveroInfo.address}. ${spinnedText(comoLlegarArr)}<a href='${viveroInfo.urlgMaps}'>Mapa del ${typeOfPlace} ${viveroInfo.name}</a></p>
+                        <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name}?</b></h3>
+                            <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name} son: </p>
+                            <ul>
+                                <li><b>Teléfono:</b>${viveroInfo.phone}</li>
+                                <li><b>SitioWeb:</b>${searchWeb(viveroInfo.web)}</li>                                
+                            </ul>
+                        <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name}?</b></h3>
+                            <p>Los horarios oficiales del ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name} son los siguientes:</p>                       
                             <ul>
                                 <li>${viveroInfo.horario.lunes}</li>
                                 <li>${viveroInfo.horario.martes}</li>
@@ -272,18 +273,20 @@ async function autoScroll(page,searchTerm){
                                 <li>${viveroInfo.horario.sabado}</li>
                                 <li>${viveroInfo.horario.domingo}</li>
                             </ul>
-                        <p>${spinnedText(aclaracionHorariosArr)}</p>
-                    <p><b>Horarios Oficiales: </b>${viveroInfo.horario}</p>
-                    <p><b>Sitio Web: </b>${searchWeb(viveroInfo.web)}</p>
-                    <p><b>Ubicación: </b><a href='${viveroInfo.urlgMaps}'>Mapa del ${typeOfPlace} ${viveroInfo.name}</a></p>                        
+                            <p>${spinnedText(aclaracionHorariosArr)}</p>                 
                     `
-
+                       
+                       
+                      
+                viveroInfo.photoLocal =`
+                    <img src="${viveroInfo.photo}" alt="${viveroInfo.name}">                
+                `
+                viveroInfo.missingData = missingDataArr.toString()
 
                     
         
                 //viveroInfo.iframe = document.querySelectorAll('.yA7sBe')[0].value
-                viveroInfo.photo = photo
-                viveroInfo.missingData = missingDataArr.toString()
+                
             
             
             
