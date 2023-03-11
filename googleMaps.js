@@ -140,6 +140,8 @@ async function autoScroll(page,searchTerm){
                 photo = document.querySelector('.aoRNLd.kn2E5e.NMjTrf.lvtCsd img').currentSrc
             }
 
+            let photoFileName = photo.replace('https://lh5.googleusercontent.com/p/','')
+
             let horarioArr =[]
             let horario = document.querySelectorAll('.mWUh3d')
             if (horario.length === 0 || document.querySelector('.mWUh3d') === null ){
@@ -247,7 +249,12 @@ async function autoScroll(page,searchTerm){
                 viveroInfo.stars =  stars
                 viveroInfo.CantidadResenas =  cantidadResenas
                 viveroInfo.opiniones = comments.toString()
-                viveroInfo.photo = photo
+                viveroInfo.photoOriginalURL = photo
+                viveroInfo.photoFileName = photoFileName
+                viveroInfo.photoNewName = viveroInfo.name.replace(/\s/ig,'_')
+                viveroInfo.photoNewURL = `https://rumbonaturaleza.com/uploads/${new Date().getFullYear()}/0${new Date().getMonth()+1}/${viveroInfo.photoNewName}.jpg`
+                viveroInfo.fileNameConversionScript = `ren "${viveroInfo.photoFileName}" "${viveroInfo.photoNewName}.jpg"`
+                viveroInfo.photoNewFileNameFull = 
                 viveroInfo.articleIntro = `
                     <p> ¿Estás buscando los mejores Parques Ecoturísticos en ${corePlace}? ¡Estás en el lugar correcto! Pues en este artículo vamos a presentarte cuáles son los  ${spinnedText(typeOfPlaceArr)} que han sido mejor evaluados en este estado. \n Para esto, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso entrevistas para poder determinar cuáles son los  ${spinnedText(typeOfPlaceArr)} que mejor calificación han recibido en ${corePlace} durante los últimos años. \n Con esta prueba social como respaldo, hoy te daremos los ${spinnedText(typeOfPlaceArr)} mejor calificados y te compartiremos su ubicación, medios oficiales de contacto, horarios y cómo llegar hasta ellos, junto con la calificación promedio con la que cuenta cada lugar. \n Así que prepárate y ¡a disfrutar del ecoturismo en ${corePlace}!</p>                    
                     `
@@ -274,9 +281,7 @@ async function autoScroll(page,searchTerm){
                                 <li>${viveroInfo.horario.domingo}</li>
                             </ul>
                             <p>${spinnedText(aclaracionHorariosArr)}</p>                 
-                    `
-                       
-                       
+                    `      
                       
                 viveroInfo.photoLocal =`
                     <img src="${viveroInfo.photo}" alt="${viveroInfo.name}">                

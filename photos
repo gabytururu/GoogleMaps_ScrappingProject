@@ -1,3 +1,4 @@
-re *.gif *.jpg
+ren *.gif *.jpg
+ren "oldName.jpg" "newName.jpg"
 wget --no-check-certificate
 
