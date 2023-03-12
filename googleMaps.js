@@ -27,11 +27,12 @@ async function autoScroll(page,searchTerm){
 //async function scrapping(){
 (async()=>{
     let baseUrl = 'https://www.google.com.mx/maps/search/vivero+en+durango+OR+viveros+en+durango/@24.0229216,-104.6827443,13z/data=!4m2!2m1!6e6?authuser=0&hl=es'
-    let totalResults = 2
+    let totalResults = 5
     let corePlace = 'Tabasco'
-    let fileName = 'viverosDurango.xlsx'
+    let fileName = 'testingAllImports.xlsx'
     let typeOfPlace = 'Parque Ecoturístico'
     let searchTerm = 'vivero en durango OR viveros en durango'
+    let targetWebsite = 'rumbonaturaleza.com'
     
    
     const browser = await puppeteer.launch({headless:false}) //
@@ -40,26 +41,26 @@ async function autoScroll(page,searchTerm){
     await page.goto(`${baseUrl}`,{waitUntil: 'domcontentloaded'})
     await autoScroll(page,searchTerm)
    
-    const viverosLinks = await page.evaluate((totalResults)=>{
+    const placesLinks = await page.evaluate((totalResults)=>{
         const dataCardsArr = document.querySelectorAll('a.hfpxzc')
-        const viverosLinks =[]        
+        const placesLinks =[]        
         dataCardsArr.forEach((element) => {
-            viverosLinks.push(element.href)            
+            placesLinks.push(element.href)            
         })      
-        return viverosLinks.slice(0,totalResults)
+        return placesLinks.slice(0,totalResults)
     },totalResults)
-    console.log('viverosLinks', viverosLinks)
-    console.log('viverosLinks Length', viverosLinks.length)
+    console.log('placesLinks', placesLinks)
+    console.log('placesLinks Length', placesLinks.length)
     
-    const viverosData = []
+    const placesData = []
     let acct = 0
-    for (let link of viverosLinks){
+    for (let link of placesLinks){
         await page.goto(link)    
        // await getiframe(page) 
         await page.waitForSelector('.DUwDvf.fontHeadlineLarge span') 
        
-        const viveroSpecifics = await page.evaluate((typeOfPlace,corePlace)=>{
-            const viveroInfo ={}
+        const placeSpecifics = await page.evaluate((typeOfPlace,corePlace,acct,targetWebsite)=>{
+            const placeInfo ={}
             
             const missingData= document.querySelectorAll('span.DkEaL')
             const missingDataArr=[]
@@ -126,11 +127,11 @@ async function autoScroll(page,searchTerm){
                     city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[3].textContent 
             };
 
-            function searchWeb(viveroWeb){
-                if(viveroWeb.includes('no disponible')){
+            function searchWeb(placeWeb){
+                if(placeWeb.includes('no disponible')){
                     return 'web no disponible'                        
                 }else{
-                    return `<a href="${viveroWeb}">Web del vivero ${viveroInfo.name}</a>`
+                    return `<a href="${placeWeb}">Web del place ${placeInfo.name}</a>`
                 }                  
             }
 
@@ -141,6 +142,8 @@ async function autoScroll(page,searchTerm){
             }
 
             let photoFileName = photo.replace('https://lh5.googleusercontent.com/p/','')
+            let photoFileNameFinal = photoFileName.replace('https://lh3.googleusercontent.com/gps-proxy/','')
+          
 
             let horarioArr =[]
             let horario = document.querySelectorAll('.mWUh3d')
@@ -229,85 +232,88 @@ async function autoScroll(page,searchTerm){
                     'Aunque cuentes ya con los horarios oficiales de apertura de este lugar, siempre te recomendamos que antes de ir eches un ojito a sus redes sociales y vías de contacto, para asegurarte de que no hayan tenido algún cambio logístico de última hora',
                 ]
                 const placeIntroArr = [
-                    `Este ${typeOfPlace} tiene ${stars} de calificación promedio, a partir de las más de ${cantidadResenas} opiniones de sus visitantes... ¿nada mal no?. Es por eso que es parte de esta lista de los ${typeOfPlace} mejor calificados de ${corePlace}. Con este respaldo estamos más que seguras(os) que se trata  de un sitio que vas a disfrutar al Máximo. Así que ya sabes, si lo que buscas es naturaleza, el ${typeOfPlace} ${viveroInfo.name}en ${corePlace}, es sin duda una gran opción`,
-                    `Bueno pues si eres de quienes ama estar en contacto con la naturaleza y andas por ${corePlace}, entonces no puedes perderte la experiencia de visitar el ${typeOfPlace} ${viveroInfo.name}. Con una calificación promedio de ${stars} estrellas de más de ${comments} visitantes, no tenemos duda de que se trata de un favorito de esta región. Así que nada...prepárate para sumergirte y disfrutar a tope de los paisajes naturales de ${corePlace}`,
-                    `El ${typeOfPlace} ${viveroInfo.name} es una opción fantástica para tener una aventura natural en ${corePlace}. Su calificación promedio es de ${stars} respaldada por más de ${cantidadResenas}visitantes, así que no tenemos duda de que este lugar pertenece a la lista de los ${typeOfPlace} mejor rankeados de ${corePlace} y que se trata de uno de los principales atractivos naturales en la región. Así que ya sabes... ¿ganas de naturaleza?... pues el ${typeOfPlace} ${viveroInfo.name} es una grandísima opción.`,
+                    `Este ${typeOfPlace} tiene ${stars} de calificación promedio, a partir de las más de ${cantidadResenas} opiniones de sus visitantes... ¿nada mal no?. Es por eso que es parte de esta lista de los ${typeOfPlace} mejor calificados de ${corePlace}. Con este respaldo estamos más que seguras(os) que se trata  de un sitio que vas a disfrutar al Máximo. Así que ya sabes, si lo que buscas es naturaleza, el ${typeOfPlace} ${placeInfo.name}en ${corePlace}, es sin duda una gran opción`,
+                    `Bueno pues si eres de quienes ama estar en contacto con la naturaleza y andas por ${corePlace}, entonces no puedes perderte la experiencia de visitar el ${typeOfPlace} ${placeInfo.name}. Con una calificación promedio de ${stars} estrellas de más de ${comments} visitantes, no tenemos duda de que se trata de un favorito de esta región. Así que nada...prepárate para sumergirte y disfrutar a tope de los paisajes naturales de ${corePlace}`,
+                    `El ${typeOfPlace} ${placeInfo.name} es una opción fantástica para tener una aventura natural en ${corePlace}. Su calificación promedio es de ${stars} respaldada por más de ${cantidadResenas}visitantes, así que no tenemos duda de que este lugar pertenece a la lista de los ${typeOfPlace} mejor rankeados de ${corePlace} y que se trata de uno de los principales atractivos naturales en la región. Así que ya sabes... ¿ganas de naturaleza?... pues el ${typeOfPlace} ${placeInfo.name} es una grandísima opción.`,
                 ]
             //-------------TEXT_SPINNER ENDS---------------//
-
+                
 
            
-                viveroInfo.name = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[1].textContent 
-                viveroInfo.address= address 
-                viveroInfo.phone= phone
-                viveroInfo.web = web
-                viveroInfo.horario = horarioOrganized
-                //viveroInfo.horario = cleanHorarioArray
-                viveroInfo.cityClean = city.slice(8,)
-                viveroInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
-                viveroInfo.city= city
-                viveroInfo.stars =  stars
-                viveroInfo.CantidadResenas =  cantidadResenas
-                viveroInfo.opiniones = comments.toString()
-                viveroInfo.photoOriginalURL = photo
-                viveroInfo.photoFileName = photoFileName
-                viveroInfo.photoNewName = viveroInfo.name.replace(/\s/ig,'_')
-                viveroInfo.photoNewURL = `https://rumbonaturaleza.com/uploads/${new Date().getFullYear()}/0${new Date().getMonth()+1}/${viveroInfo.photoNewName}.jpg`
-                viveroInfo.fileNameConversionScript = `ren "${viveroInfo.photoFileName}" "${viveroInfo.photoNewName}.jpg"`
-                viveroInfo.photoNewFileNameFull = 
-                viveroInfo.articleIntro = `
+                placeInfo.name = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[1].textContent 
+                placeInfo.address= address 
+                placeInfo.phone= phone
+                placeInfo.web = web
+                placeInfo.horario = horarioOrganized
+                placeInfo.cityClean = city.slice(8,)
+                placeInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
+                placeInfo.city= city
+                placeInfo.stars =  stars
+                placeInfo.CantidadResenas =  cantidadResenas
+                placeInfo.opiniones = comments.toString()
+                placeInfo.photoOriginalURL = photo
+                placeInfo.photoDownloadScript = `wget --no-check-certificate ${photo}`
+                placeInfo.photoFileName = photoFileNameFinal
+                placeInfo.photoNewName = `${placeInfo.name.replace(/\s/ig,'_')}_${acct}`
+                placeInfo.photoNewURL = `https://${targetWebsite}/wp-content/uploads/${new Date().getFullYear()}/0${new Date().getMonth()+1}/${placeInfo.photoNewName}.jpg`
+                placeInfo.fileNameConversionScript = `ren "${placeInfo.photoFileName}" "${placeInfo.photoNewName}.jpg"`
+                placeInfo.photoNewFileNameFull = 
+                placeInfo.articleIntro = `
                     <p> ¿Estás buscando los mejores Parques Ecoturísticos en ${corePlace}? ¡Estás en el lugar correcto! Pues en este artículo vamos a presentarte cuáles son los  ${spinnedText(typeOfPlaceArr)} que han sido mejor evaluados en este estado. \n Para esto, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso entrevistas para poder determinar cuáles son los  ${spinnedText(typeOfPlaceArr)} que mejor calificación han recibido en ${corePlace} durante los últimos años. \n Con esta prueba social como respaldo, hoy te daremos los ${spinnedText(typeOfPlaceArr)} mejor calificados y te compartiremos su ubicación, medios oficiales de contacto, horarios y cómo llegar hasta ellos, junto con la calificación promedio con la que cuenta cada lugar. \n Así que prepárate y ¡a disfrutar del ecoturismo en ${corePlace}!</p>                    
                     `
-                viveroInfo.structuredData = `
-                    <h2><b>${typeOfPlace} ${viveroInfo.name}</b></h2>
+                placeInfo.structuredData = `
+                    <h2><b>${typeOfPlace} ${placeInfo.name}</b></h2>
                         <p>${spinnedText(placeIntroArr)}</p>
-                        <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name}? </b></h3>
-                            <p>El ${spinnedText(typeOfPlaceArr)} se ubica en${viveroInfo.address}. ${spinnedText(comoLlegarArr)}<a href='${viveroInfo.urlgMaps}'>Mapa del ${typeOfPlace} ${viveroInfo.name}</a></p>
-                        <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name}?</b></h3>
-                            <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name} son: </p>
+                        <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArr)} ${placeInfo.name}? </b></h3>
+                            <p>El ${spinnedText(typeOfPlaceArr)} se ubica en${placeInfo.address}. ${spinnedText(comoLlegarArr)}<a href='${placeInfo.urlgMaps}'>Mapa del ${typeOfPlace} ${placeInfo.name}</a></p>
+                        <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArr)} ${placeInfo.name}?</b></h3>
+                            <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArr)} ${placeInfo.name} son: </p>
                             <ul>
-                                <li><b>Teléfono:</b>${viveroInfo.phone}</li>
-                                <li><b>SitioWeb:</b>${searchWeb(viveroInfo.web)}</li>                                
+                                <li><b>Teléfono:</b>${placeInfo.phone}</li>
+                                <li><b>SitioWeb:</b>${searchWeb(placeInfo.web)}</li>                                
                             </ul>
-                        <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name}?</b></h3>
-                            <p>Los horarios oficiales del ${spinnedText(typeOfPlaceArr)} ${viveroInfo.name} son los siguientes:</p>                       
+                        <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArr)} ${placeInfo.name}?</b></h3>
+                            <p>Los horarios oficiales del ${spinnedText(typeOfPlaceArr)} ${placeInfo.name} son los siguientes:</p>                       
                             <ul>
-                                <li>${viveroInfo.horario.lunes}</li>
-                                <li>${viveroInfo.horario.martes}</li>
-                                <li>${viveroInfo.horario.miercoles}</li>
-                                <li>${viveroInfo.horario.jueves}</li>
-                                <li>${viveroInfo.horario.viernes}</li>
-                                <li>${viveroInfo.horario.sabado}</li>
-                                <li>${viveroInfo.horario.domingo}</li>
+                                <li>${placeInfo.horario.lunes}</li>
+                                <li>${placeInfo.horario.martes}</li>
+                                <li>${placeInfo.horario.miercoles}</li>
+                                <li>${placeInfo.horario.jueves}</li>
+                                <li>${placeInfo.horario.viernes}</li>
+                                <li>${placeInfo.horario.sabado}</li>
+                                <li>${placeInfo.horario.domingo}</li>
                             </ul>
                             <p>${spinnedText(aclaracionHorariosArr)}</p>                 
                     `      
                       
-                viveroInfo.photoLocal =`
-                    <img src="${viveroInfo.photo}" alt="${viveroInfo.name}">                
+                placeInfo.photoLocal =`
+                    <img src="${placeInfo.photoNewURL}" alt="${placeInfo.name}">                
                 `
-                viveroInfo.missingData = missingDataArr.toString()
+                // placeInfo.photoLocalsinHttps =`
+                //     <img src="${placeInfo.photoNewURLwoHttps}" alt="${placeInfo.name}">                
+                // `
+                placeInfo.missingData = missingDataArr.toString()
 
                     
         
-                //viveroInfo.iframe = document.querySelectorAll('.yA7sBe')[0].value
+                //placeInfo.iframe = document.querySelectorAll('.yA7sBe')[0].value
                 
             
             
             
-                return viveroInfo
-        },typeOfPlace, corePlace)
+                return placeInfo
+        },typeOfPlace, corePlace,acct,targetWebsite)
 
         acct++
-        viverosData.push({acct,...viveroSpecifics})
-        console.log('viveroSpecifics',acct, viveroSpecifics)
+        placesData.push({acct,...placeSpecifics})
+        console.log('placeSpecifics',acct, placeSpecifics)
     }
-    console.log('viverosData:', viverosData)
-    console.log('Total de viveros:', viverosData.length)
+    console.log('placesData:', placesData)
+    console.log('Total de places:', placesData.length)
     await browser.close()
 
     const workbook = XLSX.utils.book_new()
-    let worksheet = XLSX.utils.json_to_sheet(viverosData)
+    let worksheet = XLSX.utils.json_to_sheet(placesData)
     XLSX.utils.book_append_sheet(workbook,worksheet,'sheet1')
     XLSX.writeFile(workbook, fileName)
 })()
