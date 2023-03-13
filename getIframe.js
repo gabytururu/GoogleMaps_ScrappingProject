@@ -17,61 +17,62 @@ const puppeteer = require ('puppeteer');
 
 
 (async()=>{
-    let pageToExplore = 'https://www.google.com/maps/place/Reserva+Nacional+Los+Queules/@-35.9492196,-72.6162752,17z/data=!4m6!3m5!1s0x96662be01f453561:0xd9c4364dc190761a!8m2!3d-35.9492196!4d-72.6162752!16s%2Fm%2F0crg7jy?authuser=0&hl=es-419'
+    let pageToExplore = 'https://www.google.com.mx/maps/place/Parque+Nacional+Bernardo+O%27Higgins/data=!4m7!3m6!1s0xbda2ee5c5c6709bb:0xae0424a6180c2ac6!8m2!3d-49.7974965!4d-74.4849485!16zL20vMGd0NGo3!19sChIJuwlnXFzuor0RxioMGKYkBK4?authuser=0&hl=es-419&rclk=1'
+    //const browser = await puppeteer.launch({headless:false, devtools: true})
     const browser = await puppeteer.launch({headless:false})
     const page = await browser.newPage()
+    await page.setViewport({width:1300,height:900});
     await page.goto(`${pageToExplore}`)
     await page.screenshot({path: 'getiframeTest.png'})
-    //const title = await page.title()
-
-       
+    //const title = await page.title()       
     const getData = await page.evaluate(()=>{
         let placeObject ={}
-        const placeName = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[1].textContent
-        
-        
+        const placeName = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[1].textContent      
         placeObject.name = placeName
        // placeObject.iframe = iframe
-
-
         return placeObject
     })
 
     console.log(getData.name) 
-
     await page.waitForSelector(`button[aria-label="Compartir ${getData.name}"]`)
     await page.click(`button[aria-label="Compartir ${getData.name}"]`)
     await page.waitForNavigation()
     await page.waitForSelector('button.zaxyGe.L6Bbsd.YTfrze')
     await page.click('button.zaxyGe.L6Bbsd.YTfrze')
-    await page.waitForNavigation()
+   // await page.waitForNavigation()
+    await page.waitForSelector('.hdeJwf.sYmAxe.pane-open')
+        .then(()=> console.log('salio el selector'))
+    await page.waitForSelector('.eNBuZ')
+        .then(()=> console.log('salio el segundo selector'))
     await page.waitForSelector('.m5XrEc')
+        .then(()=> console.log('salio el tercer selector'))
+    await page.waitForSelector('input.yA7sBe')
+        .then(()=>console.log('primer then: salio el ultimo selector: input selector'))
+        .then(()=> {
+            let input = page.$('.input.ya7sBe')
+            console.log('input del segundo then',input)
+            return input.innerHTML
+        })
+        .then(val => console.log('input del tercer then', val))
+    
+    const finalPageEval = await page.evaluate(()=>{
+        let inputPageEval = document.querySelector('.input.ya7sBe')
+        console.log('input page eval function:', inputPageEval)
+        return inputPageEval
 
-    const iframe= await page.$('.m5XrEc input.yA7sBe').value   
-    console.log(iframe) 
+    })
+    console.log('finalPageEval Consolelog', finalPageEval)
+            // const selector = page.$('.input.yA7sBe')
+            // return selector
+
+        // })
+       
+
+    // const iframe = await page.$('#modal-dialog > div > div.hoUMge > div > div.yFnP6d > div > div > div > div.eNBuZ > div.m5XrEc > input')
 
     // document.querySelector('.m5XrEc input.yA7sBe').value
-  
-    // const getIframe = await page.evaluate(()=>{
-    //     const iframe = document.querySelector('input.yA7sBe').value
-    //     return iframe
-    // })
-    // console.log(getIframe)
-
-    // const iframe= await page.querySelector('input.yA7sBe').value
-    // console.log(iframe)
-    
-    // const getiframe = await page.evaluate(()=>{
-        
-    //     const iframeSelector = document.querySelector('.rgIZ6c').childNodes[1]
-    //     console.log(iframeSelector)
-    //     iframeSelector.click()
-    //     const iframe = document.querySelector('input.yA7sBe').value
-
-    //     return iframe
-    // })
-
-    // console.log(getiframe)
+      //     const iframeSelector = document.querySelector('.rgIZ6c').childNodes[1]
+   
     //await browser.close()
 })()
    
