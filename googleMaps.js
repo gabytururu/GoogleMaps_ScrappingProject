@@ -185,7 +185,12 @@ async function autoScroll(page,searchTerm){
                     const cleanEl = el.replace(/,\sCopiar el horario/g,'')
                     const lowerD = cleanEl.replace(/D/g,'d')
                     const noColon = lowerD.replace(/,/g,'')
-                    const splitted = noColon.split('')
+                    const noChange = noColon.replace(/\sEl horario podría cambiar/,'')
+                    const noParenthesis = noChange.replace(/\([^()]+\)/g,'')
+                    const noParenthesisAgain = noParenthesis.replace(/\([^()]+\)/g,'')
+                    const noDoubleSpace = noParenthesisAgain.replace(/\s\s/,' ')
+                    const splitted = noDoubleSpace.split('')
+                    // const splitted = noColon.split('')
                     return splitted
                 })
                 
