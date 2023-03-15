@@ -27,7 +27,7 @@ async function autoScroll(page,searchTerm){
 //async function scrapping(){
 (async()=>{
     let baseUrl = 'https://www.google.com.mx/maps/search/vivero+en+durango+OR+viveros+en+durango/@24.0229216,-104.6827443,13z/data=!4m2!2m1!6e6?authuser=0&hl=es'
-    let totalResults = 5
+    let totalResults = 10
     let corePlace = 'Tabasco'
     let fileName = 'testingAllImports.xlsx'
     let typeOfPlace = 'Parque Ecoturístico'
@@ -35,7 +35,7 @@ async function autoScroll(page,searchTerm){
     let targetWebsite = 'rumbonaturaleza.com'
     
    
-    const browser = await puppeteer.launch({headless:false}) //
+    const browser = await puppeteer.launch({headless:false}) //slowMo: 300
     const page = await browser.newPage()    
     await page.setViewport({width:1300,height:900});
     await page.goto(`${baseUrl}`,{waitUntil: 'domcontentloaded'})
@@ -49,19 +49,29 @@ async function autoScroll(page,searchTerm){
         })      
         return placesLinks.slice(0,totalResults)
     },totalResults)
+
     console.log('placesLinks', placesLinks)
     console.log('placesLinks Length', placesLinks.length)
     
     const placesData = []
     let acct = 0
     for (let link of placesLinks){
-        await page.goto(link)    
-       // await getiframe(page) 
+        await page.goto(link)  
         await page.waitForSelector('.DUwDvf.fontHeadlineLarge span') 
+        const placeName = await page.$$eval('.DUwDvf.fontHeadlineLarge span', el => el[1].textContent)
+        console.log(placeName)
+        await page.waitForSelector(`button[aria-label="Compartir ${placeName}"]`)
+        await page.click(`button[aria-label="Compartir ${placeName}"]`)
+        await page.waitForNavigation()
+        await page.waitForSelector('button.zaxyGe.L6Bbsd.YTfrze')
+        await page.click('button.zaxyGe.L6Bbsd.YTfrze')
+        await page.waitForSelector('input.yA7sBe')
+        const iframeMap = await page.$eval('input.yA7sBe', el => el.getAttribute('value'))
        
-        const placeSpecifics = await page.evaluate((typeOfPlace,corePlace,acct,targetWebsite)=>{
+        const placeSpecifics = await page.evaluate((typeOfPlace,corePlace,acct,targetWebsite,iframeMap)=>{
             const placeInfo ={}
-            
+            const placeName = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[1].textContent 
+           
             const missingData= document.querySelectorAll('span.DkEaL')
             const missingDataArr=[]
             for(let dataPoint of missingData) {
@@ -203,7 +213,7 @@ async function autoScroll(page,searchTerm){
             }     
             //-------------CANTIDAD_RESEÑAS ENDS --------------//
 
-
+        
 
             //-------------TEXT_SPINNER STARTS --------------//
                 function spinnedText(textOptionsArr){
@@ -237,16 +247,16 @@ async function autoScroll(page,searchTerm){
                     `El ${typeOfPlace} ${placeInfo.name} es una opción fantástica para tener una aventura natural en ${corePlace}. Su calificación promedio es de ${stars} respaldada por más de ${cantidadResenas}visitantes, así que no tenemos duda de que este lugar pertenece a la lista de los ${typeOfPlace} mejor rankeados de ${corePlace} y que se trata de uno de los principales atractivos naturales en la región. Así que ya sabes... ¿ganas de naturaleza?... pues el ${typeOfPlace} ${placeInfo.name} es una grandísima opción.`,
                 ]
             //-------------TEXT_SPINNER ENDS---------------//
+              
                 
-
-           
-                placeInfo.name = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[1].textContent 
+                placeInfo.name = placeName                
                 placeInfo.address= address 
                 placeInfo.phone= phone
                 placeInfo.web = web
                 placeInfo.horario = horarioOrganized
                 placeInfo.cityClean = city.slice(8,)
                 placeInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
+                placeInfo.iframeMap = iframeMap
                 placeInfo.city= city
                 placeInfo.stars =  stars
                 placeInfo.CantidadResenas =  cantidadResenas
@@ -263,6 +273,9 @@ async function autoScroll(page,searchTerm){
                     `
                 placeInfo.structuredData = `
                     <h2><b>${typeOfPlace} ${placeInfo.name}</b></h2>
+                        <img src="${placeInfo.photoNewURL}" alt="${placeInfo.name}">   
+                        <div>${placeInfo.iframeMap}</div>
+                        <div></div>
                         <p>${spinnedText(placeIntroArr)}</p>
                         <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArr)} ${placeInfo.name}? </b></h3>
                             <p>El ${spinnedText(typeOfPlaceArr)} se ubica en${placeInfo.address}. ${spinnedText(comoLlegarArr)}<a href='${placeInfo.urlgMaps}'>Mapa del ${typeOfPlace} ${placeInfo.name}</a></p>
@@ -289,20 +302,12 @@ async function autoScroll(page,searchTerm){
                 placeInfo.photoLocal =`
                     <img src="${placeInfo.photoNewURL}" alt="${placeInfo.name}">                
                 `
-                // placeInfo.photoLocalsinHttps =`
-                //     <img src="${placeInfo.photoNewURLwoHttps}" alt="${placeInfo.name}">                
-                // `
-                placeInfo.missingData = missingDataArr.toString()
-
-                    
-        
-                //placeInfo.iframe = document.querySelectorAll('.yA7sBe')[0].value
                 
-            
-            
-            
+               
+                placeInfo.missingData = missingDataArr.toString()        
+
                 return placeInfo
-        },typeOfPlace, corePlace,acct,targetWebsite)
+        },typeOfPlace, corePlace,acct,targetWebsite,iframeMap)
 
         acct++
         placesData.push({acct,...placeSpecifics})

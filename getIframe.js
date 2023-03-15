@@ -1,19 +1,4 @@
-// async function getiframe(page){
-//     let document = page
-//     await page.click('img[alt="Compartir"]')
-//     await page.waitForSelector('button[aria-label="Insertar un mapa"]')
-//     await page.click('button[aria-label="Insertar un mapa"]')
-//    // await page.waitForSelector('input.yA7sBe')
-//     const iframe = await page.evaluate(()=>{
-//         return document.querySelector('input.yA7sBe').value
-//     })
-//     console.log(iframe)
-//     await page.click('button.AmPKde[aria-label="Cerrar"]')
-// }
-
-
 const puppeteer = require ('puppeteer');
-
 
 
 (async()=>{
@@ -44,9 +29,9 @@ const puppeteer = require ('puppeteer');
    
     let selectorB = 'input.yA7sBe'
     await page.waitForSelector(selectorB)
-    const iframe = page.$eval(selectorB, el => el.getAttribute('value'))
+    const iframe = await page.$eval(selectorB, el => el.getAttribute('value'))
    
-    console.log(await iframe)
+    console.log(iframe)
     
 
 
