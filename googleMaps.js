@@ -58,8 +58,8 @@ async function autoScroll(page,searchTerm){
     for (let link of placesLinks){
         await page.goto(link)  
         await page.waitForSelector('.DUwDvf.fontHeadlineLarge span') 
-        const placeName = await page.$$eval('.DUwDvf.fontHeadlineLarge span', el => el[1].textContent)
-        console.log(placeName)
+        //const placeName = await page.$$eval('.DUwDvf.fontHeadlineLarge span', el => el[1].textContent)
+        const placeName = await page.$eval('h1.DUwDvf.fontHeadlineLarge', el => el.textContent)    
         await page.waitForSelector(`button[aria-label="Compartir ${placeName}"]`)
         await page.click(`button[aria-label="Compartir ${placeName}"]`)
         await page.waitForNavigation()
@@ -70,7 +70,23 @@ async function autoScroll(page,searchTerm){
        
         const placeSpecifics = await page.evaluate((typeOfPlace,corePlace,acct,targetWebsite,iframeMap)=>{
             const placeInfo ={}
-            const placeName = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[1].textContent 
+            const placeName = document.querySelector('h1.DUwDvf.fontHeadlineLarge').textContent 
+
+            function titleCase(placeName){
+                const lowerCase = placeName.toLowerCase()
+                const splitted = lowerCase.split(' ')                
+                let cleanUpArr=[]
+                for (let el of splitted){
+                const firstUpper = el[0].toUpperCase()
+                const restLower = el.slice(1).toLowerCase()
+                const fullName = firstUpper + restLower
+                cleanUpArr.push(fullName)
+                }
+                const titleCaseName = cleanUpArr.join(' ')                    
+                return titleCaseName 
+            }
+
+            const titleCaseName = titleCase(placeName)
            
             const missingData= document.querySelectorAll('span.DkEaL')
             const missingDataArr=[]
@@ -246,10 +262,26 @@ async function autoScroll(page,searchTerm){
                     `Bueno pues si eres de quienes ama estar en contacto con la naturaleza y andas por ${corePlace}, entonces no puedes perderte la experiencia de visitar el ${typeOfPlace} ${placeInfo.name}. Con una calificación promedio de ${stars} estrellas de más de ${comments} visitantes, no tenemos duda de que se trata de un favorito de esta región. Así que nada...prepárate para sumergirte y disfrutar a tope de los paisajes naturales de ${corePlace}`,
                     `El ${typeOfPlace} ${placeInfo.name} es una opción fantástica para tener una aventura natural en ${corePlace}. Su calificación promedio es de ${stars} respaldada por más de ${cantidadResenas}visitantes, así que no tenemos duda de que este lugar pertenece a la lista de los ${typeOfPlace} mejor rankeados de ${corePlace} y que se trata de uno de los principales atractivos naturales en la región. Así que ya sabes... ¿ganas de naturaleza?... pues el ${typeOfPlace} ${placeInfo.name} es una grandísima opción.`,
                 ]
-            //-------------TEXT_SPINNER ENDS---------------//
+
+
+                 //----------TITLE CASE PLACE NAME FUNCTION----------//
+
+
+
+
+                 //-------TITLE CASE PLACE NAME FUNCTION ENDS -------//
+            
+
+
+
+            
+            
+                //-------------TEXT_SPINNER ENDS---------------//
               
                 
-                placeInfo.name = placeName                
+                placeInfo.name = placeName        
+                placeInfo.titleCaseName = titleCaseName        
+                //placeInfo.name = placeName                
                 placeInfo.address= address 
                 placeInfo.phone= phone
                 placeInfo.web = web
@@ -272,21 +304,21 @@ async function autoScroll(page,searchTerm){
                     <p> ¿Estás buscando los mejores Parques Ecoturísticos en ${corePlace}? ¡Estás en el lugar correcto! Pues en este artículo vamos a presentarte cuáles son los  ${spinnedText(typeOfPlaceArr)} que han sido mejor evaluados en este estado. \n Para esto, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso entrevistas para poder determinar cuáles son los  ${spinnedText(typeOfPlaceArr)} que mejor calificación han recibido en ${corePlace} durante los últimos años. \n Con esta prueba social como respaldo, hoy te daremos los ${spinnedText(typeOfPlaceArr)} mejor calificados y te compartiremos su ubicación, medios oficiales de contacto, horarios y cómo llegar hasta ellos, junto con la calificación promedio con la que cuenta cada lugar. \n Así que prepárate y ¡a disfrutar del ecoturismo en ${corePlace}!</p>                    
                     `
                 placeInfo.structuredData = `
-                    <h2><b>${typeOfPlace} ${placeInfo.name}</b></h2>
+                    <h2><b>${typeOfPlace} ${placeInfo.titleCaseName}</b></h2>
                         <img src="${placeInfo.photoNewURL}" alt="${placeInfo.name}">   
                         <div>${placeInfo.iframeMap}</div>
                         <div></div>
                         <p>${spinnedText(placeIntroArr)}</p>
-                        <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArr)} ${placeInfo.name}? </b></h3>
-                            <p>El ${spinnedText(typeOfPlaceArr)} se ubica en${placeInfo.address}. ${spinnedText(comoLlegarArr)}<a href='${placeInfo.urlgMaps}'>Mapa del ${typeOfPlace} ${placeInfo.name}</a></p>
-                        <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArr)} ${placeInfo.name}?</b></h3>
-                            <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArr)} ${placeInfo.name} son: </p>
+                        <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArr)} "${placeInfo.titleCaseName}"? </b></h3>
+                            <p>El ${spinnedText(typeOfPlaceArr)} se ubica en${placeInfo.address}. ${spinnedText(comoLlegarArr)}<a href='${placeInfo.urlgMaps}'>Mapa del ${typeOfPlace} ${placeInfo.titleCaseName}</a></p>
+                        <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArr)} ${placeInfo.titleCaseName}?</b></h3>
+                            <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArr)} ${placeInfo.titleCaseName} son: </p>
                             <ul>
                                 <li><b>Teléfono:</b>${placeInfo.phone}</li>
                                 <li><b>SitioWeb:</b>${searchWeb(placeInfo.web)}</li>                                
                             </ul>
-                        <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArr)} ${placeInfo.name}?</b></h3>
-                            <p>Los horarios oficiales del ${spinnedText(typeOfPlaceArr)} ${placeInfo.name} son los siguientes:</p>                       
+                        <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArr)} ${placeInfo.titleCaseName}?</b></h3>
+                            <p>Los horarios oficiales del ${spinnedText(typeOfPlaceArr)} ${placeInfo.titleCaseName} son los siguientes:</p>                       
                             <ul>
                                 <li>${placeInfo.horario.lunes}</li>
                                 <li>${placeInfo.horario.martes}</li>

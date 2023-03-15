@@ -14,9 +14,9 @@ const puppeteer = require ('puppeteer');
 
     const getData = await page.evaluate(()=>{
         let placeObject ={}
-        const placeName = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[1].textContent      
+        //const placeName = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[1].textContent      
+        const placeName = document.querySelector('h1.DUwDvf.fontHeadlineLarge').textContent
         placeObject.name = placeName
-       
         return placeObject
     })
     await page.waitForSelector(`button[aria-label="Compartir ${getData.name}"]`)
