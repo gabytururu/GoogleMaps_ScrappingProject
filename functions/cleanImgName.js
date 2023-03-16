@@ -3,3 +3,6 @@ let img = `<img src="https://lh5.googleusercontent.com/p/AF1QipPmQSXM5PoyrFj8IU2
 let fixedImg = img.replace('lh5.googleusercontent.com/p', 'rumbonaturaleza.com')
 
 console.log (fixedImg)
+
+
+
