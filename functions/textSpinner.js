@@ -33,7 +33,7 @@
 
 
 let indexArray =[]
-console.log('index array al inicio de funcion', indexArray)
+let finalArray =[]
 //let finalArr =[] /// almacena y desde placeInfo llama el último index ej [-1] asi siempre sera el ultimo agregado sin previa rep
 let links = [
     'link1', 'link2', 'link3', 'link4', 'link5', 'link6', 'link7', 'link8', 'link9', 'link10'
@@ -54,45 +54,31 @@ for (let link of links){
         {index:9, text:'Parque de Ecoturismo'},
     ]
     
-    function spinnedTextNoRepetition(typeOfPlaceObjectArr){        
-        do{
-            let i = Math.floor(Math.random() * typeOfPlaceObjectArr.length)
-            console.log(i + 'is already there')
+    let i = Math.floor(Math.random() * typeOfPlaceObjectArr.length)
 
+    function spinnedTextNoRepetition(typeOfPlaceObjectArr){        
+        do{            
+            i = Math.floor(Math.random() * typeOfPlaceObjectArr.length)          
         }while(indexArray.includes(i))
 
-        
         indexArray.push(i)
-        console.log('indexArray del return level', indexArray)
+        for (let index of indexArray){
+            typeOfPlaceObjectArr.find(el => {
+                index === typeOfPlaceObjectArr.ObjectK
+            })
+
+        }
+
         return indexArray
 
-        // if (!indexArray.includes(i)){
-        //     indexArray.push(i)
-        //     console.log(i + ' acaba de ser pusheado')
-        //     console.log('indexArrayif FALSE: ', indexArray)
-        // }else{
-        //     console.log(i + 'is already in there')
-        //     console.log('indexArray if TRUE:', indexArray)
-           
-        // }
-       
-    
-        // if (indexArray.includes(i)){
-        //     console.log(i + 'is already in there')
-        //     console.log('indexArray if TRUE:', indexArray)
-        // }else{
-        //     indexArray.push(i)
-        //     console.log(i + ' acaba de ser pusheado')
-        //     console.log('indexArrayif FALSE: ', indexArray)
-        // }
-        // console.log('indexArray del return level', indexArray)
-        // return indexArray
+        
     
     }
     
-    console.log('indexArray fuera de la funcion al acabar', indexArray)
+    console.log('indexArray en construcción', indexArray)
     spinnedTextNoRepetition(typeOfPlaceObjectArr)
 
 }
 
 
+console.log('indexArray FINAL',indexArray)
