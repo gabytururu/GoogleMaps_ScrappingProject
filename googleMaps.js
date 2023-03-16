@@ -85,9 +85,15 @@ async function autoScroll(page,searchTerm){
                 const titleCaseName = cleanUpArr.join(' ')                    
                 return titleCaseName 
             }
-
             const titleCaseName = titleCase(placeName)
-           
+
+            function lowerCase(placeName){
+                let lowerCase = placeName.toLowerCase()
+                return lowerCase
+            }
+            const lowerCaseName = lowerCase(placeName)
+
+
             const missingData= document.querySelectorAll('span.DkEaL')
             const missingDataArr=[]
             for(let dataPoint of missingData) {
@@ -286,7 +292,7 @@ async function autoScroll(page,searchTerm){
                 
                 placeInfo.name = placeName        
                 placeInfo.titleCaseName = titleCaseName        
-                //placeInfo.name = placeName                
+                placeInfo.lowerCaseName = lowerCaseName                
                 placeInfo.address= address 
                 placeInfo.phone= phone
                 placeInfo.web = web

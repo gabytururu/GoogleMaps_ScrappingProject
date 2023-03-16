@@ -27,3 +27,10 @@ function titleCase(){
    return titleCaseName 
 }
 console.log(titleCase(placeName))
+
+function lowerCase(){
+    let lowerCase = placeName.toLowerCase()
+    return lowerCase
+}
+
+console.log(lowerCase('lowerCaseTitle',placeName))
