@@ -369,13 +369,10 @@ async function autoScroll(page,searchTerm){
                                 <li>${placeInfo.horario.domingo}</li>
                             </ul>
                             <p>${spinnedText(aclaracionHorariosArr)}</p>                 
-                    `      
-                      
+                    `       
                 placeInfo.photoLocal =`
                     <img src="${placeInfo.photoNewURL}" alt="${placeInfo.name}">                
-                `
-                
-               
+                `               
                 placeInfo.missingData = missingDataArr.toString()        
 
                 return placeInfo
