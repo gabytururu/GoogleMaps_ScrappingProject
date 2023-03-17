@@ -27,7 +27,7 @@ async function autoScroll(page,searchTerm){
 //async function scrapping(){
 (async()=>{
     let baseUrl = 'https://www.google.com/maps/search/centros+ecoturisticos+en+chiapas+OR+parques+ecoturisticos+en+chiapas+OR+parques+ecotur%C3%ADsticos+en+chiapas/@17.0652099,-93.3140237,9z/data=!4m2!2m1!6e1'
-    let totalResults = 20
+    let totalResults = 3
     let searchTerm = 'centros ecoturisticos en chiapas OR parques ecoturisticos en chiapas OR parques ecoturísticos en chiapas'
     let typeOfPlace = 'Parque Ecoturístico'
     let corePlace = 'Chiapas'
@@ -60,22 +60,19 @@ async function autoScroll(page,searchTerm){
         await page.goto(link)  
         await page.waitForSelector('.DUwDvf.fontHeadlineLarge span') 
         //const placeName = await page.$$eval('.DUwDvf.fontHeadlineLarge span', el => el[1].textContent)
-        const placeName = await page.$eval('h1.DUwDvf.fontHeadlineLarge', el => el.textContent)    
+        //const placeName = await page.$eval('h1.DUwDvf.fontHeadlineLarge', el => el.textContent)    
         //await page.waitForSelector(`button[aria-label='Compartir ${placeName}']`)
         await page.waitForSelector('button.g88MCb.S9kvJb[data-value="Compartir"]')
-        //await page.waitForSelector('#QA0Szd > div > div > div.w6VYqd > div.bJzME.tTVLSc > div > div.e07Vkf.kA9KIf > div > div > div:nth-child(4) > div:nth-child(5) > button')
-        //await page.click(`button[aria-label="Compartir ${placeName}"]`)
         await page.click('button.g88MCb.S9kvJb[data-value="Compartir"]')
-       // await page.click('#QA0Szd > div > div > div.w6VYqd > div.bJzME.tTVLSc > div > div.e07Vkf.kA9KIf > div > div > div:nth-child(4) > div:nth-child(5) > button')
-        //await page.click('#QA0Szd > div > div > div.w6VYqd > div.bJzME.tTVLSc > div > div.e07Vkf.kA9KIf > div > div > div.m6QErb.Pf6ghf.ecceSd.tLjsW > div:nth-child(5) > button')
-        
         await page.waitForNavigation()
         await page.waitForSelector('button.zaxyGe.L6Bbsd.YTfrze')
         await page.click('button.zaxyGe.L6Bbsd.YTfrze')
         await page.waitForSelector('input.yA7sBe')
         const iframeMap = await page.$eval('input.yA7sBe', el => el.getAttribute('value'))
+        const mapWidth = iframeMap.replace('width="600"','width="390"')
+        const iframeResized = mapWidth.replace('height="450"','height="420"')
        
-        const placeSpecifics = await page.evaluate((typeOfPlace,corePlace,acct,targetWebsite,iframeMap, slug)=>{
+        const placeSpecifics = await page.evaluate((typeOfPlace,corePlace,acct,targetWebsite,iframeResized, slug)=>{
             const placeInfo ={}
             const placeName = document.querySelector('h1.DUwDvf.fontHeadlineLarge').textContent 
 
@@ -354,7 +351,7 @@ async function autoScroll(page,searchTerm){
                 placeInfo.cityClean = city.slice(8,)
                 placeInfo.state = corePlace
                 placeInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
-                placeInfo.iframeMap = iframeMap
+                placeInfo.iframeMap = iframeResized
                 placeInfo.city= city
                 placeInfo.stars =  stars
                 placeInfo.cantidadResenas =  cantidadResenas
@@ -403,7 +400,7 @@ async function autoScroll(page,searchTerm){
                 placeInfo.missingData = missingDataArr.toString()        
 
                 return placeInfo
-        },typeOfPlace, corePlace,acct,targetWebsite,iframeMap, slug)
+        },typeOfPlace, corePlace,acct,targetWebsite,iframeResized, slug)
 
         acct++
         placesData.push({acct,...placeSpecifics})
