@@ -26,12 +26,13 @@ async function autoScroll(page,searchTerm){
 
 //async function scrapping(){
 (async()=>{
-    let baseUrl = 'https://www.google.com.mx/maps/search/vivero+en+durango+OR+viveros+en+durango/@24.0229216,-104.6827443,13z/data=!4m2!2m1!6e6?authuser=0&hl=es'
-    let totalResults = 10
-    let corePlace = 'Tabasco'
-    let fileName = 'testingAllImports.xlsx'
+    let baseUrl = 'https://www.google.com/maps/search/centros+ecoturisticos+en+chiapas+OR+parques+ecoturisticos+en+chiapas+OR+parques+ecotur%C3%ADsticos+en+chiapas/@17.0652099,-93.3140237,9z/data=!4m2!2m1!6e1'
+    let totalResults = 20
+    let searchTerm = 'centros ecoturisticos en chiapas OR parques ecoturisticos en chiapas OR parques ecoturísticos en chiapas'
     let typeOfPlace = 'Parque Ecoturístico'
-    let searchTerm = 'vivero en durango OR viveros en durango'
+    let corePlace = 'Chiapas'
+    let slug = 'parques-ecoturismo-en-chiapas'
+    let fileName = 'testingAllImports.xlsx'
     let targetWebsite = 'rumbonaturaleza.com'
     
    
@@ -60,15 +61,21 @@ async function autoScroll(page,searchTerm){
         await page.waitForSelector('.DUwDvf.fontHeadlineLarge span') 
         //const placeName = await page.$$eval('.DUwDvf.fontHeadlineLarge span', el => el[1].textContent)
         const placeName = await page.$eval('h1.DUwDvf.fontHeadlineLarge', el => el.textContent)    
-        await page.waitForSelector(`button[aria-label="Compartir ${placeName}"]`)
-        await page.click(`button[aria-label="Compartir ${placeName}"]`)
+        //await page.waitForSelector(`button[aria-label='Compartir ${placeName}']`)
+        await page.waitForSelector('button.g88MCb.S9kvJb[data-value="Compartir"]')
+        //await page.waitForSelector('#QA0Szd > div > div > div.w6VYqd > div.bJzME.tTVLSc > div > div.e07Vkf.kA9KIf > div > div > div:nth-child(4) > div:nth-child(5) > button')
+        //await page.click(`button[aria-label="Compartir ${placeName}"]`)
+        await page.click('button.g88MCb.S9kvJb[data-value="Compartir"]')
+       // await page.click('#QA0Szd > div > div > div.w6VYqd > div.bJzME.tTVLSc > div > div.e07Vkf.kA9KIf > div > div > div:nth-child(4) > div:nth-child(5) > button')
+        //await page.click('#QA0Szd > div > div > div.w6VYqd > div.bJzME.tTVLSc > div > div.e07Vkf.kA9KIf > div > div > div.m6QErb.Pf6ghf.ecceSd.tLjsW > div:nth-child(5) > button')
+        
         await page.waitForNavigation()
         await page.waitForSelector('button.zaxyGe.L6Bbsd.YTfrze')
         await page.click('button.zaxyGe.L6Bbsd.YTfrze')
         await page.waitForSelector('input.yA7sBe')
         const iframeMap = await page.$eval('input.yA7sBe', el => el.getAttribute('value'))
        
-        const placeSpecifics = await page.evaluate((typeOfPlace,corePlace,acct,targetWebsite,iframeMap)=>{
+        const placeSpecifics = await page.evaluate((typeOfPlace,corePlace,acct,targetWebsite,iframeMap, slug)=>{
             const placeInfo ={}
             const placeName = document.querySelector('h1.DUwDvf.fontHeadlineLarge').textContent 
 
@@ -253,6 +260,10 @@ async function autoScroll(page,searchTerm){
                 const typeOfPlaceArrlowerCase = [
                     'parque ecoturístico', 'centro ecoturístico','parque ecoturístico', 'sitio ecoturístico', 'parque ecológico','parque ecoturístico', 'parque natural','parque ecoturístico', 'centro de ecoturismo', 'parque de ecoturismo' 
                 ]
+
+                const typeofPlaceLowerPlural =[
+                    'parques ecoturísticos', 'centros ecoturísticos','parques ecoturísticos', 'sitios ecoturísticos', 'parques ecológicos','parques ecoturísticos', 'parques naturales','parques ecoturísticos', 'centros de ecoturismo', 'parques de ecoturismo' 
+                ]
                 const comoLlegarArr = [
                     'Para llegar, puedes símplemente colocar esta dirección en el googleMaps o Waze o apoyarte en este ',
                     'Para ir a este lugar usar esa dirección en un gps o ayudarte con este ',
@@ -310,10 +321,24 @@ async function autoScroll(page,searchTerm){
                  ]
 
                 const placeIntroArr = [
-                    `Este ${typeOfPlace} tiene ${stars} de calificación promedio, a partir de las más de ${cantidadResenas} opiniones de sus visitantes... ¿nada mal no?. Es por eso que es parte de esta lista de los ${typeOfPlace} mejor calificados de ${corePlace}. Con este respaldo estamos más que seguras(os) que se trata  de un sitio que vas a disfrutar al Máximo. Así que ya sabes, si lo que buscas es naturaleza, el ${typeOfPlace} ${placeInfo.name}en ${corePlace}, es sin duda una gran opción`,
-                    `Bueno pues si eres de quienes ama estar en contacto con la naturaleza y andas por ${corePlace}, entonces no puedes perderte la experiencia de visitar el ${typeOfPlace} ${placeInfo.name}. Con una calificación promedio de ${stars} estrellas de más de ${comments} visitantes, no tenemos duda de que se trata de un favorito de esta región. Así que nada...prepárate para sumergirte y disfrutar a tope de los paisajes naturales de ${corePlace}`,
-                    `El ${typeOfPlace} ${placeInfo.name} es una opción fantástica para tener una aventura natural en ${corePlace}. Su calificación promedio es de ${stars} respaldada por más de ${cantidadResenas}visitantes, así que no tenemos duda de que este lugar pertenece a la lista de los ${typeOfPlace} mejor rankeados de ${corePlace} y que se trata de uno de los principales atractivos naturales en la región. Así que ya sabes... ¿ganas de naturaleza?... pues el ${typeOfPlace} ${placeInfo.name} es una grandísima opción.`,
+                    `Este ${spinnedText(typeOfPlaceArrlowerCase)} tiene ${placeInfo.stars} estrellas de calificación promedio, a partir de las más de ${placeInfo.cantidadResenas} opiniones de sus visitantes... ¿nada mal no?. Es por esto que ${placeInfo.titleCaseName} es parte de esta lista de los ${spinnedText(typeofPlaceLowerPlural)} mejor calificados de ${placeInfo.corePlace}. Con este respaldo estamos más que seguras(os) que se trata  de un sitio que vas a disfrutar al Máximo. Así que ya sabes, si lo que buscas es naturaleza, el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} en ${placeInfo.corePlace} es sin duda una gran opción`,
+                    `Bueno pues si eres de quienes ama estar en contacto con la naturaleza y andas por ${placeInfo.corePlace}, entonces no puedes perderte la experiencia de visitar el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}. Con una calificación promedio de ${placeInfo.stars}estrellas de más de ${placeInfo.cantidadResenas} visitantes, no tenemos duda de que se trata de un favorito de esta región. Así que nada...prepárate para sumergirte y disfrutar a tope de los paisajes naturales de ${placeInfo.corePlace} y Lánzate a ${placeInfo.titleCaseName}`,
+                    `El ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} es una opción fantástica para tener una aventura natural en ${placeInfo.corePlace}. Su calificación promedio es de ${placeInfo.stars} estrellas respaldada por más de ${placeInfo.cantidadResenas} visitantes, así que no tenemos duda de que este lugar pertenece a la lista de los ${spinnedText(typeofPlaceLowerPlural)} mejor rankeados de de ${placeInfo.corePlace} y que se trata de uno de los principales atractivos naturales en la región. Así que ya sabes... ¿ganas de naturaleza?... pues entonces el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} es una grandísima opción`,
+                    `Si te apasiona la naturaleza y andas en busca de aventuras ¡pues no se diga más! porque sin duda el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} es una opción en ${placeInfo.corePlace} que no debes dejar pasar. Este ${spinnedText(typeOfPlaceArrlowerCase)} tiene una calificación promedio de ${placeInfo.stars} estrellas, basada en las opiniones de más de ${placeInfo.cantidadResenas} visitantes, motivo por el que forma parte de este rank. Así es que... siendo uno de los ${spinnedText(typeofPlaceLowerPlural)} mejores calificados en ${placeInfo.corePlace}  ¿qué esperas para visitarlo?`,
+                    `Bueno... pues ya que andas buscando salir de lo cotidiano... ¿Qué tal disfrutar de algunos de los paisajes más bonitos y naturales de ${placeInfo.corePlace}?. Pues eso es lo que ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} te ofrece. Este sitio tiene una calificación promedio de ${placeInfo.stars} estrellas, a partir de opiniones de al menos ${placeInfo.cantidadResenas} visitantes previos a ti, y es por eso que se considera uno de los top de este estado. Así que nada... sin excusas y ¡a vivir esta experiencia en la naturaleza!`,
+                    `Entendemos que si estás aquí, es porque estás buscando un buen lugar en ${placeInfo.corePlace} para conectarte con la naturaleza y disfrutarla a tope. Y nada... que el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}} es sin duda alguna una de tus mejores opciones para lograrlo. Este ${spinnedText(typeOfPlaceArrlowerCase)} ha sido evaluada por más de ${placeInfo.cantidadResenas} visitantes, que le otorgan en promedio una calificación de ${placeInfo.stars} estrellas, haciéndolo uno de los ${spinnedText(typeofPlaceLowerPlural)} más recomendados de ${placeInfo.corePlace}. Así que nada.. a pasar del pensamiento a la acción y a poner ${placeInfo.titleCaseName} en tu ruta de ecoturismo ¡pero ya!`,
+                    `Uno de los sitios naturales más memorables de ${placeInfo.corePlace} es sin duda alguna el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}. Este lugar está respaldado por un montón de visitantes previos y más de ${placeInfo.cantidadResenas} evaluaciones promedio que rondan las ${placeInfo.stars} estrellas, lo que lo hace un favorito de esta región. Es por eso que forma parte de esta lista de los mejores ${spinnedText(typeofPlaceLowerPlural)} de ${placeInfo.corePlace}, y es por eso también que nos parece una recomendación imperdible para ti.`,
+                    `Si andas en búsca de experiencias únicas en la naturaleza, entonces el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} en ${placeInfo.corePlace} tiene que ser parte de tu lista. Este es un ${spinnedText(typeOfPlaceArrlowerCase)} con más de ${placeInfo.cantidadResenas} opiniones de visitantes y que ha sido de manera consistente calificado con hasta ${placeInfo.stars} estrellas, es por eso que aunque pueda tener algunas áreas de mejora, es sin duda uno de los mejores lugares para disfrutar de la naturaleza en la región. Así que no lo pienses mucho más y ¡a visitar ${placeInfo.titleCaseName}!`,
+                    `El ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} es una de las joyas naturales que tiene ${placeInfo.corePlace}. Se trata de un lugar evaluado en promedio con ${placeInfo.stars} estrellas por al menos ${placeInfo.cantidadResenas} personas. Es por esto que no podemos dejar de recomendártelo como uno de los favoritos para los amantes de la naturaleza en ${placeInfo.corePlace}. Así que ya sabes, guárdate toda la información logística que vamos a proporcionarte y anímate a visitar este increíble ${spinnedText(typeOfPlaceArrlowerCase)} cuanto antes`,
+                    `Si se trata de explorar la belleza natural de ${placeInfo.corePlace}, entonces el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} es lo que llamamos un "must". Este centro ecoturístico está recomendado por más de ${placeInfo.cantidadResenas} opiniones de visitantes que lo han evaluado hasta con ${placeInfo.stars} estrellas. Se trata de uno de los espacios naturales más amenos de la región y por eso una alternativa que no debes dejar de visitar si andas por ${placeInfo.corePlace} buscando algo natural`,
+                    `Si eres de los que disfrutan de los paisajes naturales, entonces tienes que visitar el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} en ${placeInfo.corePlace}. Con más de ${placeInfo.cantidadResenas} opiniones de visitantes y una calificación promedio de ${placeInfo.stars} estrellas, este lugar es uno de los más valorados en la región`,
+                    `¿Quieres vivir un paseo increible en contacto con la naturaleza? entonces no puedes dejar de considerar una visita al ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} en ${placeInfo.corePlace}. Con una calificación promedio de ${placeInfo.stars} estrellas y más de ${placeInfo.cantidadResenas} opiniones de visitantes, este lugar es una de las mejores opciones para los amantes del ecoturismo en esta región. Así es que ¡toma nota  de todo lo requerido para tu visita a continuación!`,
+                    `Si estás en busca de un lugar para conectarte con la naturaleza, el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} es una de tus mejores apuestas. Este sitio forma parte de esta lista de los mejores ${spinnedText(typeofPlaceLowerPlural)} de ${placeInfo.corePlace} gracias al respaldo y opiniones de más de ${placeInfo.cantidadResenas} visitantes y que le han otorgado una calificación de más de ${placeInfo.stars} estrellas en promedio. Este lugar es sin duda uno de los mejores para disfrutar del entorno natural y paisajes de ${placeInfo.corePlace} y practicar el ecoturismo y la aventura en la región`,
+                    `Si estás en ${placeInfo.corePlace} en búsqueda de algo de ecoturismo y aventura entonces el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} no se te puede escapar. Hemos decidido incluir este ${spinnedText(typeOfPlaceArrlowerCase)} en esta lista de los mejores de ${placeInfo.corePlace} gracias al respaldo y opiniones de más de ${placeInfo.cantidadResenas} visitantes que lo han evaluado públicamente por lo menos con ${placeInfo.stars} estrellas de calificación (de las más altas para este estado del país). Así que chécate todos lo detalles necesarios para tu visita y ¡no se diga más! ¡a vivir el ecoturismo en ${placeInfo.corePlace} en ${placeInfo.titleCaseName}!`,
+                    `Si lo que buscas es conectar con la naturaleza de ${placeInfo.corePlace}, entonces -sí o sí- tienes que programarte para una visita al ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}. Este es uno de los ${spinnedText(typeofPlaceLowerPlural)} mejor calificados de ${placeInfo.corePlace} (con ${placeInfo.stars} estrellas y más de ${placeInfo.cantidadResenas} opiniones públicas de visitantes), lo que lo hace un favorito de los amantes del ecoturismo y la aventura natural. Si andas en busqueda justo de eso, entonces revisa los detalles siguientes para tener una visita segura y ¡lánzate al parque ${placeInfo.titleCaseName}!`,
+                    `¿Te gusta el ecoturismo o andas en ${placeInfo.corePlace} buscando algo de aventura natural? Entonces pon ya mismo en tu lista al ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}. Este es un lugar ideal para encontrarte con la naturaleza y disfrutar de paisajes lindos. Es un ${spinnedText(typeOfPlaceArrlowerCase)} que ha sido evaluado por más de ${placeInfo.cantidadResenas} personas y tiene un promedio de ${placeInfo.stars} estrellas de calificación. Aunque puede que haya algunos detallitos que es posible mejorar, la realidad es que ${placeInfo.titleCaseName} es un paso obligado si lo que estás buscando es ecoturismo y naturaleza en ${placeInfo.corePlace}`
                 ]
+                
 
             
                 //-------------TEXT_SPINNER ENDS---------------//
@@ -327,38 +352,40 @@ async function autoScroll(page,searchTerm){
                 placeInfo.web = web
                 placeInfo.horario = horarioOrganized
                 placeInfo.cityClean = city.slice(8,)
+                placeInfo.state = corePlace
                 placeInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
                 placeInfo.iframeMap = iframeMap
                 placeInfo.city= city
                 placeInfo.stars =  stars
-                placeInfo.CantidadResenas =  cantidadResenas
+                placeInfo.cantidadResenas =  cantidadResenas
                 placeInfo.opiniones = comments.toString()
                 placeInfo.photoOriginalURL = photo
                 placeInfo.photoDownloadScript = `wget --no-check-certificate ${photo}`
                 placeInfo.photoFileName = photoFileNameFinal
                 placeInfo.photoNewName = `${placeInfo.name.replace(/\s/ig,'_')}_${acct}`
+                placeInfo.photoNewFullFileName = `${placeInfo.photoNewName}.jpg`
                 placeInfo.photoNewURL = `https://${targetWebsite}/wp-content/uploads/${new Date().getFullYear()}/0${new Date().getMonth()+1}/${placeInfo.photoNewName}.jpg`
                 placeInfo.fileNameConversionScript = `ren "${placeInfo.photoFileName}" "${placeInfo.photoNewName}.jpg"`
-                placeInfo.photoNewFileNameFull = 
+                placeInfo.slug = slug
                 placeInfo.articleIntro = `
-                    <p> ¿Estás buscando los mejores Parques Ecoturísticos en ${corePlace}? ¡Estás en el lugar correcto! Pues en este artículo vamos a presentarte cuáles son los  ${spinnedText(typeOfPlaceArr)} que han sido mejor evaluados en este estado. \n Para esto, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso entrevistas para poder determinar cuáles son los  ${spinnedText(typeOfPlaceArr)} que mejor calificación han recibido en ${corePlace} durante los últimos años. \n Con esta prueba social como respaldo, hoy te daremos los ${spinnedText(typeOfPlaceArr)} mejor calificados y te compartiremos su ubicación, medios oficiales de contacto, horarios y cómo llegar hasta ellos, junto con la calificación promedio con la que cuenta cada lugar. \n Así que prepárate y ¡a disfrutar del ecoturismo en ${corePlace}!</p>                    
+                    <p> ¿Estás buscando los mejores parques ecoturísticos en ${placeInfo.corePlace}? Entonces sin duda ¡estás en el lugar correcto!. Hoy en este artículo vamos a presentarte cuáles son los  ${spinnedText(typeOfPlaceArrlowerCase)} que han sido mejor evaluados en este estado. \n Para poder definir esta listade los mejores, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso algunas entrevistas que nos permitieron determinar cuáles son y dónde se ubican los ${spinnedText(typeOfPlaceArrlowerCase)} que mejores experiencias han brindado a sus visitantes, y que mayor calificación han recibido en ${placeInfo.corePlace} durante los últimos años. \n Con esta prueba social como respaldo, hoy te compartimos la lista de los ${spinnedText(typeOfPlaceArrlowerCase)} mejor calificados en ${placeInfo.corePlace} en ${new Date().getFullYear} junto con su ubicación, medios oficiales de contacto, horarios y cómo llegar hasta ellos; así como la calificación promedio con la que cuenta cada lugar. \n Prepárate con esto y ¡a disfrutar del ecoturismo en ${placeInfo.corePlace}!</p>                    
                     `
                 placeInfo.structuredData = `
-                    <h2><b>${typeOfPlace} ${placeInfo.titleCaseName}</b></h2>
+                    <h2><b>${spinnedText(typeOfPlaceArrTitleCase)} ${placeInfo.titleCaseName}</b></h2>
                         <img src="${placeInfo.photoNewURL}" alt="${placeInfo.name}">   
                         <div>${placeInfo.iframeMap}</div>
                         <div></div>
                         <p>${spinnedText(placeIntroArr)}</p>
-                        <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArr)} "${placeInfo.titleCaseName}"? </b></h3>
-                            <p>El ${spinnedText(typeOfPlaceArr)} se ubica en${placeInfo.address}. ${spinnedText(comoLlegarArr)}<a href='${placeInfo.urlgMaps}'>Mapa del ${typeOfPlace} ${placeInfo.titleCaseName}</a></p>
-                        <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArr)} ${placeInfo.titleCaseName}?</b></h3>
-                            <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArr)} ${placeInfo.titleCaseName} son: </p>
+                        <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArrTitleCase)} "${placeInfo.titleCaseName}"? </b></h3>
+                            <p>El ${spinnedText(typeOfPlaceArrlowerCase)} se ubica en${placeInfo.address}. ${spinnedText(comoLlegarArr)}<a href='${placeInfo.urlgMaps}'>Mapa del ${typeOfPlaceArrTitleCase} ${placeInfo.titleCaseName}</a></p>
+                        <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}?</b></h3>
+                            <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArrTitleCase)} ${placeInfo.titleCaseName} son: </p>
                             <ul>
                                 <li><b>Teléfono:</b>${placeInfo.phone}</li>
                                 <li><b>SitioWeb:</b>${searchWeb(placeInfo.web)}</li>                                
                             </ul>
-                        <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArr)} ${placeInfo.titleCaseName}?</b></h3>
-                            <p>Los horarios oficiales del ${spinnedText(typeOfPlaceArr)} ${placeInfo.titleCaseName} son los siguientes:</p>                       
+                        <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}?</b></h3>
+                            <p>Los horarios oficiales del ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} son los siguientes:</p>                       
                             <ul>
                                 <li>${placeInfo.horario.lunes}</li>
                                 <li>${placeInfo.horario.martes}</li>
@@ -376,7 +403,7 @@ async function autoScroll(page,searchTerm){
                 placeInfo.missingData = missingDataArr.toString()        
 
                 return placeInfo
-        },typeOfPlace, corePlace,acct,targetWebsite,iframeMap)
+        },typeOfPlace, corePlace,acct,targetWebsite,iframeMap, slug)
 
         acct++
         placesData.push({acct,...placeSpecifics})
