@@ -183,52 +183,69 @@ async function autoScroll(page,searchTerm){
 
             let horarioArr =[]
             let horario = document.querySelectorAll('.mWUh3d')
+            
             if (horario.length === 0 || document.querySelector('.mWUh3d') === null ){
                 horarioArr.push('No se cuenta con horario oficial')
             }else{
                 horario.forEach(el => horarioArr.push(el.ariaLabel)) 
             }
-          
+
+
             function cleanHorario(horarioArray){
-               const splitArray =              
-                horarioArray.map(el => {
-                    const cleanEl = el.replace(/,\sCopiar el horario/g,'')
-                    const lowerD = cleanEl.replace(/D/g,'d')
-                    const noColon = lowerD.replace(/,/g,'')
-                    const noChange = noColon.replace(/\sEl horario podría cambiar/,'')
-                    const noParenthesis = noChange.replace(/\([^()]+\)/g,'')
-                    const noParenthesisAgain = noParenthesis.replace(/\([^()]+\)/g,'')
-                    const noDoubleSpace = noParenthesisAgain.replace(/\s\s/,' ')
-                    const splitted = noDoubleSpace.split('')
-                    // const splitted = noColon.split('')
-                    return splitted
-                })
+
+                if (horarioArray.toString().includes('No se cuenta')){
+
+                    return 'No se cuenta con horario oficial'
+
+                } else{                
+                    const splitArray = 
+                    horarioArray.map(el => { 
+                        const cleanEl = el.replace(/,\sCopiar el horario/g,'')
+                        const lowerD = cleanEl.replace(/D/g,'d')
+                        const noColon = lowerD.replace(/,/g,'')
+                        const noChange = noColon.replace(/\sEl horario podría cambiar/,'')
+                        const noParenthesis = noChange.replace(/\([^()]+\)/g,'')
+                        const noParenthesisAgain = noParenthesis.replace(/\([^()]+\)/g,'')
+                        const noDoubleSpace = noParenthesisAgain.replace(/\s\s/,' ')
+                        const splitted = noDoubleSpace.split('')
+                        // const splitted = noColon.split('')
+                        return splitted
+                    })
+                    
+                    for (let arr of splitArray){
+                        arr[0] = arr[0].toUpperCase()
+                    }
+                    
+                    let newCleanArray = []
+                    splitArray.forEach(el => {
+                    let joinet = el.join('')
+                    newCleanArray.push(joinet)
+                    })
                 
-                for (let arr of splitArray){
-                    arr[0] = arr[0].toUpperCase()
-                }
-                
-                let newCleanArray = []
-                splitArray.forEach(el => {
-                let joinet = el.join('')
-                newCleanArray.push(joinet)
-                })
-            
-                return newCleanArray                
+                    return newCleanArray   
+                }             
             }
 
             const cleanHorarioArray = cleanHorario(horarioArr)
+            let horarioOrganized = ''
 
-            const horarioOrganized = {
-                lunes: cleanHorarioArray.find(el=>el.includes('Lunes')),
-                martes: cleanHorarioArray.find(el => el.includes('Martes')),
-                miercoles: cleanHorarioArray.find(el => el.includes('Miércoles')),
-                jueves: cleanHorarioArray.find(el => el.includes('Jueves')),
-                viernes: cleanHorarioArray.find(el => el.includes('Viernes')),
-                sabado: cleanHorarioArray.find(el => el.includes('Sábado')),
-                domingo: cleanHorarioArray.find(el => el.includes('Domingo')),
+            if (cleanHorarioArray === 'No se cuenta con horario oficial'){
+                horarioOrganized = 'No se cuenta con horario oficial'
+
+            }else {
+                horarioOrganized = {
+                    lunes: cleanHorarioArray.find(el=>el.includes('Lunes')),
+                    martes: cleanHorarioArray.find(el => el.includes('Martes')),
+                    miercoles: cleanHorarioArray.find(el => el.includes('Miércoles')),
+                    jueves: cleanHorarioArray.find(el => el.includes('Jueves')),
+                    viernes: cleanHorarioArray.find(el => el.includes('Viernes')),
+                    sabado: cleanHorarioArray.find(el => el.includes('Sábado')),
+                    domingo: cleanHorarioArray.find(el => el.includes('Domingo')),
+                }   
+
             }
 
+            
             //-------------CANTIDAD_RESEÑAS STARTS --------------//
             let totalComments = document.querySelectorAll('.MyEned span.wiI7pd').length
             if ( totalComments < 1 || document.querySelector('.MyEned span.wiI7pd') === null ) {
@@ -347,7 +364,9 @@ async function autoScroll(page,searchTerm){
                 placeInfo.address= address 
                 placeInfo.phone= phone
                 placeInfo.web = web
+                // placeInfo.horario = horarioOrganized.toString().includes('No se cuenta')? horarioOrganized.toString(): `${horarioOrganized.lunes},${horarioOrganized.martes},${horarioOrganized.miercoles},${horarioOrganized.jueves},${horarioOrganized.viernes},${horarioOrganized.sabado},${horarioOrganized.domingo},`
                 placeInfo.horario = horarioOrganized
+                placeInfo.horarioText = cleanHorarioArray.toString()
                 placeInfo.cityClean = city.slice(8,)
                 placeInfo.state = corePlace
                 placeInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
@@ -382,7 +401,10 @@ async function autoScroll(page,searchTerm){
                                 <li><b>SitioWeb:</b>${searchWeb(placeInfo.web)}</li>                                
                             </ul>
                         <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}?</b></h3>
-                            <p>Los horarios oficiales del ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} son los siguientes:</p>                       
+                        ${placeInfo.horario === 'No se cuenta con horario oficial' ? 
+                            `<p> Lamentablemente este sitio no cuenta con horarios publicados oficialmente, posiblemente debido a que existen variaciones frecuentes en sus horarios de operación. \n Por este motivo, te recomendamos consultar sus sitios oficiales en una fecha cercana a tu visita o contactarlos directamente para pedir la actualización más reciente de sus días y horas de operación.`
+                        :
+                            `<p>Los horarios oficiales del ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} son los siguientes:</p>                       
                             <ul>
                                 <li>${placeInfo.horario.lunes}</li>
                                 <li>${placeInfo.horario.martes}</li>
@@ -392,8 +414,8 @@ async function autoScroll(page,searchTerm){
                                 <li>${placeInfo.horario.sabado}</li>
                                 <li>${placeInfo.horario.domingo}</li>
                             </ul>
-                            <p>${spinnedText(aclaracionHorariosArr)}</p>                 
-                    `       
+                            <p>${spinnedText(aclaracionHorariosArr)}</p>`                                           
+                        }`           
                 placeInfo.photoLocal =`
                     <img src="${placeInfo.photoNewURL}" alt="${placeInfo.name}">                
                 `               
