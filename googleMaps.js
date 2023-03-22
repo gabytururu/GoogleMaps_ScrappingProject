@@ -26,13 +26,13 @@ async function autoScroll(page,searchTerm){
 
 //async function scrapping(){
 (async()=>{
-    let baseUrl = 'https://www.google.com/maps/search/centros+ecoturisticos+en+chiapas+OR+parques+ecoturisticos+en+chiapas+OR+parques+ecotur%C3%ADsticos+en+chiapas/@17.0652099,-93.3140237,9z/data=!4m2!2m1!6e1'
-    let totalResults = 3
-    let searchTerm = 'centros ecoturisticos en chiapas OR parques ecoturisticos en chiapas OR parques ecoturísticos en chiapas'
+    let baseUrl = 'https://www.google.com/maps/search/parques+ecotur%C3%ADsticos+en+oaxaca+OR+centros+ecotur%C3%ADsticos+en+oaxaca+OR+parques+ecol%C3%B3gicos+en+oaxaca/@17.0685414,-96.7203396,11z/data=!4m2!2m1!6e1'
+    let totalResults = 120
+    let searchTerm = 'parques ecoturísticos en oaxaca OR centros ecoturísticos en oaxaca OR parques ecológicos en oaxaca'
     let typeOfPlace = 'Parque Ecoturístico'
-    let corePlace = 'Chiapas'
-    let slug = 'parques-ecoturismo-en-chiapas'
-    let fileName = 'testingAllImports.xlsx'
+    let corePlace = 'Oaxaca'
+    let slug = 'parques-ecoturismo-en-oaxaca'
+    let fileName = 'parquesEcoturismoOaxaca.xlsx'
     let targetWebsite = 'rumbonaturaleza.com'
     
    
@@ -332,26 +332,11 @@ async function autoScroll(page,searchTerm){
                     'Te sugerimos verificar siempre sus canales digitales y redes sociales antes de ir al parque pues incluso si cuentas con los horarios oficiales, pudiera haber cambios especiales por feriados, vacaciones o situaciones inesperadas',
                     'Aunque los horarios estén oficialmente vigentes, es bueno que cheques en sus redes y canales digitales el estátus del centro o parque antes de ir. Así te aseguras de que no ha habido cambios especiales o cierres extraordinarios por feriados o holidays especiales',
                     'Es importante revisar en sus redes sociales o contactos digitales antes de ir, incluso si ya tienes los horarios oficiales, para evitar cualquier cambio logístico o de horario de última hora',     
-                 ]
-
-                 const placeIntroArr = [
-                    `Este ${spinnedText(typeOfPlaceArrlowerCase)} tiene ${placeInfo.stars} estrellas de calificación promedio, a partir de las más de ${placeInfo.cantidadResenas} opiniones de sus visitantes... ¿nada mal no?. Es por esto que ${placeInfo.titleCaseName} es parte de esta lista de los ${spinnedText(typeofPlaceLowerPlural)} mejor calificados de ${placeInfo.state}. Con este respaldo estamos más que seguras(os) que se trata  de un sitio que vas a disfrutar al Máximo. Así que ya sabes, si lo que buscas es naturaleza, el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} en ${placeInfo.state} es sin duda una gran opción`,
-                    `Bueno pues si eres de quienes ama estar en contacto con la naturaleza y andas por ${placeInfo.state}, entonces no puedes perderte la experiencia de visitar el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}. Con una calificación promedio de ${placeInfo.stars}estrellas de más de ${placeInfo.cantidadResenas} visitantes, no tenemos duda de que se trata de un favorito de esta región. Así que nada...prepárate para sumergirte y disfrutar a tope de los paisajes naturales de ${placeInfo.state} y Lánzate a ${placeInfo.titleCaseName}`,
-                    `El ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} es una opción fantástica para tener una aventura natural en ${placeInfo.state}. Su calificación promedio es de ${placeInfo.stars} estrellas respaldada por más de ${placeInfo.cantidadResenas} visitantes, así que no tenemos duda de que este lugar pertenece a la lista de los ${spinnedText(typeofPlaceLowerPlural)} mejor rankeados de de ${placeInfo.state} y que se trata de uno de los principales atractivos naturales en la región. Así que ya sabes... ¿ganas de naturaleza?... pues entonces el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} es una grandísima opción`,
-                    `Si te apasiona la naturaleza y andas en busca de aventuras ¡pues no se diga más! porque sin duda el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} es una opción en ${placeInfo.state} que no debes dejar pasar. Este ${spinnedText(typeOfPlaceArrlowerCase)} tiene una calificación promedio de ${placeInfo.stars} estrellas, basada en las opiniones de más de ${placeInfo.cantidadResenas} visitantes, motivo por el que forma parte de este rank. Así es que... siendo uno de los ${spinnedText(typeofPlaceLowerPlural)} mejores calificados en ${placeInfo.state}  ¿qué esperas para visitarlo?`,
-                    `Bueno... pues ya que andas buscando salir de lo cotidiano... ¿Qué tal disfrutar de algunos de los paisajes más bonitos y naturales de ${placeInfo.state}?. Pues eso es lo que ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} te ofrece. Este sitio tiene una calificación promedio de ${placeInfo.stars} estrellas, a partir de opiniones de al menos ${placeInfo.cantidadResenas} visitantes previos a ti, y es por eso que se considera uno de los top de este estado. Así que nada... sin excusas y ¡a vivir esta experiencia en la naturaleza!`,
-                    `Entendemos que si estás aquí, es porque estás buscando un buen lugar en ${placeInfo.state} para conectarte con la naturaleza y disfrutarla a tope. Y nada... que el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}} es sin duda alguna una de tus mejores opciones para lograrlo. Este ${spinnedText(typeOfPlaceArrlowerCase)} ha sido evaluada por más de ${placeInfo.cantidadResenas} visitantes, que le otorgan en promedio una calificación de ${placeInfo.stars} estrellas, haciéndolo uno de los ${spinnedText(typeofPlaceLowerPlural)} más recomendados de ${placeInfo.state}. Así que nada.. a pasar del pensamiento a la acción y a poner ${placeInfo.titleCaseName} en tu ruta de ecoturismo ¡pero ya!`,
-                    `Uno de los sitios naturales más memorables de ${placeInfo.state} es sin duda alguna el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}. Este lugar está respaldado por un montón de visitantes previos y más de ${placeInfo.cantidadResenas} evaluaciones promedio que rondan las ${placeInfo.stars} estrellas, lo que lo hace un favorito de esta región. Es por eso que forma parte de esta lista de los mejores ${spinnedText(typeofPlaceLowerPlural)} de ${placeInfo.state}, y es por eso también que nos parece una recomendación imperdible para ti.`,
-                    `Si andas en búsca de experiencias únicas en la naturaleza, entonces el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} en ${placeInfo.state} tiene que ser parte de tu lista. Este es un ${spinnedText(typeOfPlaceArrlowerCase)} con más de ${placeInfo.cantidadResenas} opiniones de visitantes y que ha sido de manera consistente calificado con hasta ${placeInfo.stars} estrellas, es por eso que aunque pueda tener algunas áreas de mejora, es sin duda uno de los mejores lugares para disfrutar de la naturaleza en la región. Así que no lo pienses mucho más y ¡a visitar ${placeInfo.titleCaseName}!`,
-                    `El ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} es una de las joyas naturales que tiene ${placeInfo.state}. Se trata de un lugar evaluado en promedio con ${placeInfo.stars} estrellas por al menos ${placeInfo.cantidadResenas} personas. Es por esto que no podemos dejar de recomendártelo como uno de los favoritos para los amantes de la naturaleza en ${placeInfo.state}. Así que ya sabes, guárdate toda la información logística que vamos a proporcionarte y anímate a visitar este increíble ${spinnedText(typeOfPlaceArrlowerCase)} cuanto antes`,
-                    `Si se trata de explorar la belleza natural de ${placeInfo.state}, entonces el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} es lo que llamamos un "must". Este centro ecoturístico está recomendado por más de ${placeInfo.cantidadResenas} opiniones de visitantes que lo han evaluado hasta con ${placeInfo.stars} estrellas. Se trata de uno de los espacios naturales más amenos de la región y por eso una alternativa que no debes dejar de visitar si andas por ${placeInfo.state} buscando algo natural`,
-                    `Si eres de los que disfrutan de los paisajes naturales, entonces tienes que visitar el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} en ${placeInfo.state}. Con más de ${placeInfo.cantidadResenas} opiniones de visitantes y una calificación promedio de ${placeInfo.stars} estrellas, este lugar es uno de los más valorados en la región`,
-                    `¿Quieres vivir un paseo increible en contacto con la naturaleza? entonces no puedes dejar de considerar una visita al ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} en ${placeInfo.state}. Con una calificación promedio de ${placeInfo.stars} estrellas y más de ${placeInfo.cantidadResenas} opiniones de visitantes, este lugar es una de las mejores opciones para los amantes del ecoturismo en esta región. Así es que ¡toma nota  de todo lo requerido para tu visita a continuación!`,
-                    `Si estás en busca de un lugar para conectarte con la naturaleza, el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} es una de tus mejores apuestas. Este sitio forma parte de esta lista de los mejores ${spinnedText(typeofPlaceLowerPlural)} de ${placeInfo.state} gracias al respaldo y opiniones de más de ${placeInfo.cantidadResenas} visitantes y que le han otorgado una calificación de más de ${placeInfo.stars} estrellas en promedio. Este lugar es sin duda uno de los mejores para disfrutar del entorno natural y paisajes de ${placeInfo.state} y practicar el ecoturismo y la aventura en la región`,
-                    `Si estás en ${placeInfo.state} en búsqueda de algo de ecoturismo y aventura entonces el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} no se te puede escapar. Hemos decidido incluir este ${spinnedText(typeOfPlaceArrlowerCase)} en esta lista de los mejores de ${placeInfo.state} gracias al respaldo y opiniones de más de ${placeInfo.cantidadResenas} visitantes que lo han evaluado públicamente por lo menos con ${placeInfo.stars} estrellas de calificación (de las más altas para este estado del país). Así que chécate todos lo detalles necesarios para tu visita y ¡no se diga más! ¡a vivir el ecoturismo en ${placeInfo.state} en ${placeInfo.titleCaseName}!`,
-                    `Si lo que buscas es conectar con la naturaleza de ${placeInfo.state}, entonces -sí o sí- tienes que programarte para una visita al ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}. Este es uno de los ${spinnedText(typeofPlaceLowerPlural)} mejor calificados de ${placeInfo.state} (con ${placeInfo.stars} estrellas y más de ${placeInfo.cantidadResenas} opiniones públicas de visitantes), lo que lo hace un favorito de los amantes del ecoturismo y la aventura natural. Si andas en busqueda justo de eso, entonces revisa los detalles siguientes para tener una visita segura y ¡lánzate al parque ${placeInfo.titleCaseName}!`,
-                    `¿Te gusta el ecoturismo o andas en ${placeInfo.state} buscando algo de aventura natural? Entonces pon ya mismo en tu lista al ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}. Este es un lugar ideal para encontrarte con la naturaleza y disfrutar de paisajes lindos. Es un ${spinnedText(typeOfPlaceArrlowerCase)} que ha sido evaluado por más de ${placeInfo.cantidadResenas} personas y tiene un promedio de ${placeInfo.stars} estrellas de calificación. Aunque puede que haya algunos detallitos que es posible mejorar, la realidad es que ${placeInfo.titleCaseName} es un paso obligado si lo que estás buscando es ecoturismo y naturaleza en ${placeInfo.state}`
                 ]
+
+
+
+               
                 
 
             
@@ -367,6 +352,13 @@ async function autoScroll(page,searchTerm){
                 // placeInfo.horario = horarioOrganized.toString().includes('No se cuenta')? horarioOrganized.toString(): `${horarioOrganized.lunes},${horarioOrganized.martes},${horarioOrganized.miercoles},${horarioOrganized.jueves},${horarioOrganized.viernes},${horarioOrganized.sabado},${horarioOrganized.domingo},`
                 placeInfo.horario = horarioOrganized
                 placeInfo.horarioText = cleanHorarioArray.toString()
+                placeInfo.horarioLunes = horarioOrganized.lunes
+                placeInfo.horarioMartes = horarioOrganized.martes
+                placeInfo.horarioMiercoles = horarioOrganized.miercoles
+                placeInfo.horarioJueves = horarioOrganized.jueves
+                placeInfo.horarioViernes = horarioOrganized.viernes
+                placeInfo.horarioSabado = horarioOrganized.sabado
+                placeInfo.horarioDomingo = horarioOrganized.domingo
                 placeInfo.cityClean = city.slice(8,)
                 placeInfo.state = corePlace
                 placeInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
@@ -377,60 +369,58 @@ async function autoScroll(page,searchTerm){
                 placeInfo.opiniones = comments.toString()
                 placeInfo.photoOriginalURL = photo
                 placeInfo.photoDownloadScript = `wget --no-check-certificate ${photo}`
-                placeInfo.photoFileName = photoFileNameFinal
+                placeInfo.photoFileName = photoFileNameFinal ///wtf pq se repite?
                 placeInfo.photoNewName = `${placeInfo.name.replace(/\s/ig,'_')}_${acct}`
                 placeInfo.photoNewFullFileName = `${placeInfo.photoNewName}.jpg`
                 placeInfo.photoNewURL = `https://${targetWebsite}/wp-content/uploads/${new Date().getFullYear()}/0${new Date().getMonth()+1}/${placeInfo.photoNewName}.jpg`
                 placeInfo.fileNameConversionScript = `ren "${placeInfo.photoFileName}" "${placeInfo.photoNewName}.jpg"`
                 placeInfo.slug = slug
-                placeInfo.articleIntro = `
-                    <p> ¿Estás buscando los mejores parques ecoturísticos en ${placeInfo.state}? Entonces sin duda ¡estás en el lugar correcto!. Hoy en este artículo vamos a presentarte cuáles son los  ${spinnedText(typeofPlaceLowerPlural)} que han sido mejor evaluados en este estado. \n Para poder definir esta listade los mejores, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso algunas entrevistas que nos permitieron determinar cuáles son y dónde se ubican los ${spinnedText(typeofPlaceLowerPlural)} que mejores experiencias han brindado a sus visitantes, y que mayor calificación han recibido en ${placeInfo.state} durante los últimos años. \n Con esta prueba social como respaldo, hoy te compartimos la lista de los ${spinnedText(typeOfPlaceArrlowerCase)} mejor calificados en ${placeInfo.state} en ${new Date().getFullYear} junto con su ubicación, medios oficiales de contacto, horarios y cómo llegar hasta ellos; así como la calificación promedio con la que cuenta cada lugar. \n Prepárate con esto y ¡a disfrutar del ecoturismo en ${placeInfo.state}!</p>                    
-                    `
-                placeInfo.structuredData = `
-                    <h2><b>${spinnedText(typeOfPlaceArrTitleCase)} ${placeInfo.titleCaseName}</b></h2>
-                        <img src="${placeInfo.photoNewURL}" alt="${placeInfo.name}">   
-                        <div>${placeInfo.iframeMap}</div>
-                        <div></div>
-                        <p>${spinnedText(placeIntroArr)}</p>
-                        <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArrTitleCase)} "${placeInfo.titleCaseName}"? </b></h3>
-                            <p>Este ${spinnedText(typeOfPlaceArrlowerCase)} se ubica en ${placeInfo.address}\n ${spinnedText(comoLlegarArr)}<a href='${placeInfo.urlgMaps}'>Mapa del ${spinnedText(typeOfPlaceArrTitleCase)} ${placeInfo.titleCaseName}</a></p>
-                        <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}?</b></h3>
-                            <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArrTitleCase)} ${placeInfo.titleCaseName} son: </p>
-                            <ul>
-                                <li><b>Teléfono:</b>${placeInfo.phone}</li>
-                                <li><b>SitioWeb:</b>${searchWeb(placeInfo.web)}</li>                                
-                            </ul>
-                        <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}?</b></h3>
-                        ${placeInfo.horario === 'No se cuenta con horario oficial' ? 
-                            `<p> Lamentablemente este sitio no cuenta con horarios publicados oficialmente, posiblemente debido a que existen variaciones frecuentes en sus horarios de operación. \n Por este motivo, te recomendamos consultar sus sitios oficiales en una fecha cercana a tu visita o contactarlos directamente para pedir la actualización más reciente de sus días y horas de operación.`
-                        :
-                            `<p>Los horarios oficiales del ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} son los siguientes:</p>                       
-                            <ul>
-                                <li>${placeInfo.horario.lunes}</li>
-                                <li>${placeInfo.horario.martes}</li>
-                                <li>${placeInfo.horario.miercoles}</li>
-                                <li>${placeInfo.horario.jueves}</li>
-                                <li>${placeInfo.horario.viernes}</li>
-                                <li>${placeInfo.horario.sabado}</li>
-                                <li>${placeInfo.horario.domingo}</li>
-                            </ul>
-                            <p>${spinnedText(aclaracionHorariosArr)}</p>`                                           
-                        }`           
-                placeInfo.photoLocal =`
-                    <img src="${placeInfo.photoNewURL}" alt="${placeInfo.name}">                
-                `               
                 placeInfo.missingData = missingDataArr.toString()  
-
-
+                // placeInfo.articleIntro = `
+                //     <p> ¿Estás buscando los mejores parques ecoturísticos en ${placeInfo.state}? Entonces sin duda ¡estás en el lugar correcto!. Hoy en este artículo vamos a presentarte cuáles son los  ${spinnedText(typeofPlaceLowerPlural)} que han sido mejor evaluados en este estado. \n Para poder definir esta listade los mejores, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso algunas entrevistas que nos permitieron determinar cuáles son y dónde se ubican los ${spinnedText(typeofPlaceLowerPlural)} que mejores experiencias han brindado a sus visitantes, y que mayor calificación han recibido en ${placeInfo.state} durante los últimos años. \n Con esta prueba social como respaldo, hoy te compartimos la lista de los ${spinnedText(typeOfPlaceArrlowerCase)} mejor calificados en ${placeInfo.state} en ${new Date().getFullYear} junto con su ubicación, medios oficiales de contacto, horarios y cómo llegar hasta ellos; así como la calificación promedio con la que cuenta cada lugar. \n Prepárate con esto y ¡a disfrutar del ecoturismo en ${placeInfo.state}!</p>                    
+                //     `
+                // placeInfo.structuredData = `
+                //     <h2><b>${spinnedText(typeOfPlaceArrTitleCase)} ${placeInfo.titleCaseName}</b></h2>
+                //         <img src="${placeInfo.photoNewURL}" alt="${placeInfo.name}">   
+                //         <div>${placeInfo.iframeMap}</div>
+                //         <div></div>
+                //         <p>${spinnedText(placeIntroArr)}</p>
+                //         <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArrTitleCase)} "${placeInfo.titleCaseName}"? </b></h3>
+                //             <p>Este ${spinnedText(typeOfPlaceArrlowerCase)} se ubica en ${placeInfo.address}\n ${spinnedText(comoLlegarArr)}<a href='${placeInfo.urlgMaps}'>Mapa del ${spinnedText(typeOfPlaceArrTitleCase)} ${placeInfo.titleCaseName}</a></p>
+                //         <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}?</b></h3>
+                //             <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArrTitleCase)} ${placeInfo.titleCaseName} son: </p>
+                //             <ul>
+                //                 <li><b>Teléfono:</b>${placeInfo.phone}</li>
+                //                 <li><b>SitioWeb:</b>${searchWeb(placeInfo.web)}</li>                                
+                //             </ul>
+                //         <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName}?</b></h3>
+                //         ${placeInfo.horario === 'No se cuenta con horario oficial' ? 
+                //             `<p> Lamentablemente este sitio no cuenta con horarios publicados oficialmente, posiblemente debido a que existen variaciones frecuentes en sus horarios de operación. \n Por este motivo, te recomendamos consultar sus sitios oficiales en una fecha cercana a tu visita o contactarlos directamente para pedir la actualización más reciente de sus días y horas de operación.`
+                //         :
+                //             `<p>Los horarios oficiales del ${spinnedText(typeOfPlaceArrlowerCase)} ${placeInfo.titleCaseName} son los siguientes:</p>                       
+                //             <ul>
+                //                 <li>${placeInfo.horario.lunes}</li>
+                //                 <li>${placeInfo.horario.martes}</li>
+                //                 <li>${placeInfo.horario.miercoles}</li>
+                //                 <li>${placeInfo.horario.jueves}</li>
+                //                 <li>${placeInfo.horario.viernes}</li>
+                //                 <li>${placeInfo.horario.sabado}</li>
+                //                 <li>${placeInfo.horario.domingo}</li>
+                //             </ul>
+                //             <p>${spinnedText(aclaracionHorariosArr)}</p>`                                           
+                //         }`           
+                // placeInfo.photoLocal =`
+                //     <img src="${placeInfo.photoNewURL}" alt="${placeInfo.name}">                
+                // `               
                 return placeInfo
         },typeOfPlace, corePlace,acct,targetWebsite,iframeResized, slug)
 
         acct++
         placesData.push({acct,...placeSpecifics})
-        console.log('placeSpecifics',acct, placeSpecifics)
+        //console.log('placeSpecifics',acct, placeSpecifics)
     }
     console.log('placesData:', placesData)
-    console.log('Total de places:', placesData.length)
+    console.log('Total de placesData:', placesData.length)
     await browser.close()
 
     const workbook = XLSX.utils.book_new()
