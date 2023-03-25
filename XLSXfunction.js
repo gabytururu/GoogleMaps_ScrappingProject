@@ -254,10 +254,13 @@ const wb = XLSX.readFile(topPlacesFullWB)
 const ws = wb.Sheets[topPlacesSelectedDataWS]
 const jsonFromExcel = XLSX.utils.sheet_to_json(ws)
 let topPlacesArray = jsonFromExcel
+console.log('topPlacesArray length:', topPlacesArray.length)
+console.log('topPlacesArray:', topPlacesArray)
 
 
 let placesArray=[]
 let selectedIntrosArr = []
+
 let textIntrosClean = [
     `Este parque ecoturistico tiene 4.5estrellas de calificación promedio, a partir de las más de 350 opiniones de sus visitantes... ¿nada mal no?. Es por esto que Cascadas de Villa Luz es parte de esta lista de los centros ecoturisticos mejor calificados de Tabasco. Con este respaldo estamos más que seguras(os) que se trata  de un sitio que vas a disfrutar al Máximo. Así que ya sabes, si lo que buscas es naturaleza, el parque ecoturistico Cascadas de Villa Luz en Tabasco es sin duda una gran opción`,
     `Con una calificación promedio de 4.5 estrellas y más de 350 opiniones positivas, ¡Cascadas de Villa Luz en Tabasco es sin duda parte del selecto grupo de los mejores centros ecoturísticos! Estamos seguros que si lo tuyo son entornos naturales este parque te permitirá disfrutar al máximo tu experiencia. Así que no dudes - Cascadas de Villa Luz sería la excelente elección para vivir el contacto directo con la naturaleza.`,
@@ -292,6 +295,22 @@ let textIntrosClean = [
     `¿Quieres disfrutar de la naturaleza en Tabasco al máximo? Entonces el parque ecoturístico Cascadas de Villa Luz es lo que llamamos un "MUST". Este parque ecoturístico tiene una calificación promedio de 4.5 estrellas y más de 350 opiniones positivas por quienes lo han visitado anteriormente. Por esas razones Cascadas de Villa Luz se ha consilidado como uno de los principales atractivos naturales de Tabasco y uno de los mejores sitios para hacer ecoturismo en esta región.`,
     `Si estás buscando un lugar para conectarte con la naturaleza y disfrutarla a lo más, entonces  Cascadas de Villa Luz es una de las mejores opciones para tí. Este parque ecoturístico de Tabasco, tiene más de 350 opiniones positivas de sus visitantes, quienes lo han calificado en promedio como un sitio de 4.5 estrellas, lo que lo mantiene como uno de los centros ecoturísticos más concurridos de la región. Entonces ya sabes, si andas por Tabasco, aprovecha la oportunidad y organízate para visitar las Cascadas de Villa Luz.`,
 ]
+let postIntrosClean =[
+    `¿Estás buscando opciones para hacer ecoturismo?, ¡llegaste al lugar correcto!, porque hoy vamos a mostrarte los resultados de nuestra investigación acerca de los mejores parques ecoturísticos en Oaxaca. \n\n Para definir esta lista de ganadores, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso algunas entrevistas directas. Este proceso nos permitió determinar cuáles son y en qué parte de Oaxaca se ubican los parques ecoturísticos que mejores experiencias han dado a sus visitantes y con mayor calificación durante los últimos años. \n\n Con todo esto como respaldo, hoy te compartimos la lista de los ganadores de este año junto con su ubicación, calificación promedio del lugar, medios oficiales de contacto, horarios y cómo llegar hasta ellos. \n\n Prepárate con esto y ¡a disfrutar del ecoturismo en Oaxaca!.`,
+    `¿Eres entusiasta del ecoturismo y la naturaleza y andas por el sureste de México? Entonces ¡no te arrepentirás de quedarte por acá!. Pues hoy vamos a compartirte información sobre los mejores parques ecoturísticos en Oaxaca. \n\n Después de una exhaustiva investigación en varias fuentes, incluyendo redes sociales, rankings y entrevistas directas, hicimos una lista de los parques ecoturísticos de Oaxaca que más contentos han dejado a sus visitantes. \n\n Esta lista incluye información como la ubicación, calificación promedio del lugar,  medios oficiales de contacto, horarios y cómo llegar hasta allí.\n\n Así que, prepárate para disfrutar del ecoturismo en Oaxaca con la lista de ganadores de este año. ¡No se diga más!...\n\n`,
+    `¿Estás en Oaxaca y estás list@ para una aventura de ecoturismo a tope? ¡Pues hoy te tenemos cubierto/a!. Nuestro equipo  ha seleccionado los mejores parques ecoturísticos en Oaxaca para que no te falten opciones de naturaleza durante tu estancia por esta región.  \n\n Esta lista fué realizada en función de la satisfacción de sus visitantes previos, y la calidad y tipos de experiencia que ofrece cada lugar. \n\n Además de la lista, te compartiremos también detalles de cómo llegar a este lugar, sus horarios oficiales y vías de contacto. Así que ¡Prepárate para sumergirte en la naturaleza con nuestra lista de los parques ecoturísticos más destacados de Oaxaca!`,
+    `¡Hola! ¡Qué emoción tenerte por acá con ganas de practicar algo de ecoturismo!... y es que, si estás buscando las mejores opciones para hacer ecoturismo en Oaxaca, entonces ¡has venido al lugar ideal!. \n\n Hemos investigado a fondo para encontrar los mejores parques ecoturísticos en Oaxaca, o por lo menos los mejor rankeados por sus visitantes. Desde paisajes increíbles hasta experiencias de aprendizaje en la naturaleza, no te faltará nada.  \n\n Además, para ayudarte a planear un viaje seguro, vamos a compartirte la ubicación, horarios, y medios de contacto de cada uno de estos lugares. Así es que sin más...¡Prepárate para explorar la belleza natural de Oaxaca!`,
+    `¿Estás buscando buenas opciones de ecoturismoy naturaleza?, Pues hoy ¡tenemos muchas respuestas para ti!.\n\n  Nuestro equipo preparó una lista con los parques ecoturísticos en Oaxaca con mayor trayectoria y mejor calificación por parte de sus visitantes.  \n\n En esta lista encontrarás no solo las opciones de lugar sino también los detalles de cómo llegar, sus horarios vigentes y contactos oficiales para planear tu visita de manera exitosa.  \n\n Así que nada... si el ecoturismo es lo tuyo entonces ¡no se diga más! a sumergirte en la lista de los mejores parques ecoturísticos en Oaxaca  y a disfrutar al máximo la naturaleza de esta región.`,
+    `¿Listo para una aventura de ecoturismo sin igual en Oaxaca? ¡pues aterrizaste en el lugar adecuado!. Hoy te vamos a ayudar a identificar los mejores parques ecoturísticos en Oaxaca, para que no te queden dudas ni pretextos para no salir a la naturaleza estos días. \n\n Esta lista fué preparada haciendo una clasificación detallada de los parques ecoturísticos con mejor calificación en redes sociales, medios digitales y testimonios oficiales de visitantes previos. Además de incluir las calificaciones oficiales que han recibido, incluye también las vías de contacto oficial de cada sitio, horarios vigentes y liga a mapas y detalles logísticos para llegar de manera segura a cada uno de ellos. \n\n Asi es que nada... toma nota y empieza a preparar tu visita, estamos seguras(os) de que luego de echar un ojo a esta lista, vas a querer salir a conocer estos parques ecoturísticos ¡desde ya!.`,
+    `Si lo tuyo es el ecoturismo, pues llegaste al lugar ideal... porque ¡también es lo nuestro!, Y por eso hoy preparamos una lista bien detallada de las mejores opciones que existen de parques ecoturísticos en Oaxaca, para que no te quedes con ganas de salir a explorar los paisajes increíbles de esta región. \n\n Hemos investigado a fondo para identificar cuáles han sido los parques ecoturísticos mejor evaluados por sus visitantes anteriores a través de redes sociales, testimonios públicos, directorios de negocios y algunas entrevistas también. Además de esto, vamos a compartirte los datos de cada lugar, horarios vigentes, y enlaces a rutas logísticas para llegar fácilmente. ¡Así que no te quedes con las ganas! toma nota y ¡a disfrutar la naturaleza de Oaxaca!.`,
+    `¡Hola hola! ¡Qué gusto tenerte hoy por acá añorando un poquito de naturaleza!. Y es que si estás buscando lugares naturales increíbles, entonces llegaste al lugar ideal. Hoy vamos a compartirte una lista con varios de los mejores parques ecoturísticos en Oaxaca, para que si de naturaleza se trata ¡no te falten opciones!. \n\nEsta lista la preparamos con mucha atención, indagando en medios digitales, redes sociales, testimonios públicos y con incluso algunas entrevistas para determinar cuáles han sido los parques ecoturísticos que mejor han sido evaluados en Oaxaca.  \n\nAdemás de compartirte la lista final de ganadores, hemos incluido también sus contactos oficiales, horarios vigentes y medios logísticos (ej. mapas) para que puedas encontrar el lugar fácilmente.  \n\nAsí que nada, sin más demora, toma nota y ¡a disfrutar a tope la naturaleza en Oaxaca!.`,
+    `¡Hola hola! ¡Qué gusto tenerte hoy por acá añorando un poquito de naturaleza!. Y es que si estás buscando lugares naturales increíbles, entonces llegaste al lugar ideal. Hoy vamos a compartirte una lista con varios de los mejores parques ecoturísticos en Oaxaca, para que si de naturaleza se trata ¡no te falten opciones!. \n\nEsta lista la preparamos con mucha atención, indagando en medios digitales, redes sociales, testimonios públicos y con incluso algunas entrevistas para determinar cuáles han sido los parques ecoturísticos que mejor han sido evaluados en Oaxaca.  \n\nAdemás de compartirte la lista final de ganadores, hemos incluido también sus contactos oficiales, horarios vigentes y medios logísticos (ej. mapas) para que puedas encontrar el lugar fácilmente.  \n\nAsí que nada, sin más demora, toma nota y ¡a disfrutar a tope la naturaleza en Oaxaca!.`,
+    `¡Hola hola! ¡Qué gusto tenerte hoy por acá añorando un poquito de naturaleza!. Y es que si estás buscando lugares naturales increíbles, entonces llegaste al lugar ideal. Hoy vamos a compartirte una lista con varios de los mejores parques ecoturísticos en Oaxaca, para que si de naturaleza se trata ¡no te falten opciones!. \n\nEsta lista la preparamos con mucha atención, indagando en medios digitales, redes sociales, testimonios públicos y con incluso algunas entrevistas para determinar cuáles han sido los parques ecoturísticos que mejor han sido evaluados en Oaxaca.  \n\nAdemás de compartirte la lista final de ganadores, hemos incluido también sus contactos oficiales, horarios vigentes y medios logísticos (ej. mapas) para que puedas encontrar el lugar fácilmente.  \n\nAsí que nada, sin más demora, toma nota y ¡a disfrutar a tope la naturaleza en Oaxaca!.`
+]
+
+console.log('textIntrosClean Array length:', textIntrosClean.length)
+console.log('postIntrosClean Array length:', postIntrosClean.length)
+
 const typeOfPlaceArrTitleCase = [
     'Parque Ecoturístico', 'Centro Ecoturístico','Parque Ecoturístico', 'Sitio Ecoturístico', 'Centro Ecoturístico','Parque Ecoturístico', 'Parque Natural','Parque Ecoturístico', 'Centro de Ecoturismo', 'Parque de Ecoturismo', 'Centro Ecoturístico', 'Parque de Ecoturismo'
 ]
@@ -358,16 +377,22 @@ const aclaracionHorariosArr =[
 ]
 
     function introSelectedIndex(textIntrosClean){
-    let randomIndex = Math.floor(Math.random() * textIntrosClean.length)
-    do{
-        randomIndex = Math.floor(Math.random() * textIntrosClean.length)
-    }while(selectedIntrosArr.includes(randomIndex))
+        let randomIndex = Math.floor(Math.random() * textIntrosClean.length)
+        do{
+            randomIndex = Math.floor(Math.random() * textIntrosClean.length)
+        }while(selectedIntrosArr.includes(randomIndex))
 
-    selectedIntrosArr.push(randomIndex)
-    return randomIndex
+        selectedIntrosArr.push(randomIndex)
+        return randomIndex
+    }
+    
+    function spinnedTextIndex(textOptionsArr){
+        let selectedIndex = Math.floor(Math.random() * textOptionsArr.length)
+        return selectedIndex
     }
 
     for (let place of topPlacesArray){
+        
         let placeObject ={
             rank: place.rank,
             titleCaseName: place.titleCaseName,
@@ -375,6 +400,7 @@ const aclaracionHorariosArr =[
             cantidadResenas: place.cantidadResenas,
             stars: place.stars,
             state: place.state,
+            postIntroIndex: spinnedTextIndex(postIntrosClean),
             introIndex: introSelectedIndex(textIntrosClean), 
             introText: textIntrosClean[introSelectedIndex(textIntrosClean)],
             address: place.address,
@@ -412,7 +438,29 @@ const aclaracionHorariosArr =[
 
     let finalPlacesArray = []
     for (let place of placesArray){     
+       
+        console.log('testing place.state:', place.state)
+        console.log('testing SpinnedText(type of place arr: ', spinnedText(typeofPlaceLowerPlural))
+        console.log('postIntroClean: ', postIntrosClean.length)
+        
 
+        let postIntroArr = [
+            `¿Estás buscando opciones para hacer ecoturismo?, ¡llegaste al lugar correcto!, porque hoy vamos a mostrarte los resultados de nuestra investigación acerca de los mejores parques ecoturísticos en ${place.state}. \n\n Para definir esta lista de ganadores, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso algunas entrevistas directas. Este proceso nos permitió determinar cuáles son y en qué parte de ${place.state} se ubican los ${spinnedText(typeofPlaceLowerPlural)} que mejores experiencias han dado a sus visitantes y con mayor calificación durante los últimos años. \n\n Con todo esto como respaldo, hoy te compartimos la lista de los ganadores de este año junto con su ubicación, calificación promedio del lugar, medios oficiales de contacto, horarios y cómo llegar hasta ellos. \n\n Prepárate con esto y ¡a disfrutar del ecoturismo en ${place.state}!.`,
+            `¿Eres entusiasta del ecoturismo y la naturaleza y andas por el sureste de México? Entonces ¡no te arrepentirás de quedarte por acá!. Pues hoy vamos a compartirte información sobre los mejores ${spinnedText(typeofPlaceLowerPlural)} en ${place.state}. \n\n Después de una exhaustiva investigación en varias fuentes, incluyendo redes sociales, rankings y entrevistas directas, hicimos una lista de los ${spinnedText(typeofPlaceLowerPlural)} de ${place.state} que más contentos han dejado a sus visitantes. \n\n Esta lista incluye información como la ubicación, calificación promedio del lugar,  medios oficiales de contacto, horarios y cómo llegar hasta allí.\n\n Así que, prepárate para disfrutar del ecoturismo en ${place.state} con la lista de ganadores de este año. ¡No se diga más!...\n\n`,
+            `¿Estás buscando opciones para hacer ecoturismo?, ¡llegaste al lugar correcto!, porque hoy vamos a mostrarte los resultados de nuestra investigación acerca de los mejores parques ecoturísticos en ${place.state}. \n\n Para definir esta lista de ganadores, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso algunas entrevistas directas. Este proceso nos permitió determinar cuáles son y en qué parte de ${place.state} se ubican los ${spinnedText(typeofPlaceLowerPlural)} que mejores experiencias han dado a sus visitantes y con mayor calificación durante los últimos años. \n\n Con todo esto como respaldo, hoy te compartimos la lista de los ganadores de este año junto con su ubicación, calificación promedio del lugar, medios oficiales de contacto, horarios y cómo llegar hasta ellos. \n\n Prepárate con esto y ¡a disfrutar del ecoturismo en ${place.state}!.`,
+            `¿Eres entusiasta del ecoturismo y la naturaleza y andas por el sureste de México? Entonces ¡no te arrepentirás de quedarte por acá!. Pues hoy vamos a compartirte información sobre los mejores ${spinnedText(typeofPlaceLowerPlural)} en ${place.state}. \n\n Después de una exhaustiva investigación en varias fuentes, incluyendo redes sociales, rankings y entrevistas directas, hicimos una lista de los ${spinnedText(typeofPlaceLowerPlural)} de ${place.state} que más contentos han dejado a sus visitantes. \n\n Esta lista incluye información como la ubicación, calificación promedio del lugar,  medios oficiales de contacto, horarios y cómo llegar hasta allí.\n\n Así que, prepárate para disfrutar del ecoturismo en ${place.state} con la lista de ganadores de este año. ¡No se diga más!...\n\n`,
+            `¿Estás en ${place.state} y estás list@ para una aventura de ecoturismo a tope? ¡Pues hoy te tenemos cubierto/a!. Nuestro equipo  ha seleccionado los mejores ${spinnedText(typeofPlaceLowerPlural)} en ${place.state} para que no te falten opciones de naturaleza durante tu estancia por esta región.  \n\n Esta lista fué realizada en función de la satisfacción de sus visitantes previos, y la calidad y tipos de experiencia que ofrece cada lugar. \n\n Además de la lista, te compartiremos también detalles de cómo llegar a este lugar, sus horarios oficiales y vías de contacto. Así que ¡Prepárate para sumergirte en la naturaleza con nuestra lista de los ${spinnedText(typeofPlaceLowerPlural)} más destacados de ${place.state}!`,
+            `¡Hola! ¡Qué emoción tenerte por acá con ganas de practicar algo de ecoturismo!... y es que, si estás buscando las mejores opciones para hacer ecoturismo en ${place.state}, entonces ¡has venido al lugar ideal!. \n\n Hemos investigado a fondo para encontrar los mejores ${spinnedText(typeofPlaceLowerPlural)} en ${place.state}, o por lo menos los mejor rankeados por sus visitantes. Desde paisajes increíbles hasta experiencias de aprendizaje en la naturaleza, no te faltará nada.  \n\n Además, para ayudarte a planear un viaje seguro, vamos a compartirte la ubicación, horarios, y medios de contacto de cada uno de estos lugares. Así es que sin más...¡Prepárate para explorar la belleza natural de ${place.state}!`,
+            `¿Estás buscando buenas opciones de ecoturismoy naturaleza?, Pues hoy ¡tenemos muchas respuestas para ti!.\n\n  Nuestro equipo preparó una lista con los ${spinnedText(typeofPlaceLowerPlural)} en ${place.state} con mayor trayectoria y mejor calificación por parte de sus visitantes.  \n\n En esta lista encontrarás no solo las opciones de lugar sino también los detalles de cómo llegar, sus horarios vigentes y contactos oficiales para planear tu visita de manera exitosa.  \n\n Así que nada... si el ecoturismo es lo tuyo entonces ¡no se diga más! a sumergirte en la lista de los mejores ${spinnedText(typeofPlaceLowerPlural)} en ${place.state}  y a disfrutar al máximo la naturaleza de esta región.`,
+            `¿Listo para una aventura de ecoturismo sin igual en ${place.state}? ¡pues aterrizaste en el lugar adecuado!. Hoy te vamos a ayudar a identificar los mejores ${spinnedText(typeofPlaceLowerPlural)} en ${place.state}, para que no te queden dudas ni pretextos para no salir a la naturaleza estos días. \n\n Esta lista fué preparada haciendo una clasificación detallada de los ${spinnedText(typeofPlaceLowerPlural)} con mejor calificación en redes sociales, medios digitales y testimonios oficiales de visitantes previos. Además de incluir las calificaciones oficiales que han recibido, incluye también las vías de contacto oficial de cada sitio, horarios vigentes y liga a mapas y detalles logísticos para llegar de manera segura a cada uno de ellos. \n\n Asi es que nada... toma nota y empieza a preparar tu visita, estamos seguras(os) de que luego de echar un ojo a esta lista, vas a querer salir a conocer estos ${spinnedText(typeofPlaceLowerPlural)} ¡desde ya!.`,
+            `Si lo tuyo es el ecoturismo, pues llegaste al lugar ideal... porque ¡también es lo nuestro!, Y por eso hoy preparamos una lista bien detallada de las mejores opciones que existen de $${spinnedText(typeofPlaceLowerPlural)} en ${place.state}, para que no te quedes con ganas de salir a explorar los paisajes increíbles de esta región. Hemos investigado a fondo para identificar cuáles han sido los ${place.state} mejor evaluados por sus visitantes anteriores a través de redes sociales, testimonios públicos, directorios de negocios y algunas entrevistas también. Además de esto, vamos a compartirte los datos de cada lugar, horarios vigentes, y enlaces a rutas logísticas para llegar fácilmente. ¡Así que no te quedes con las ganas! toma nota y ¡a disfrutar la naturaleza de !.`,
+            `¡Hola hola! ¡Qué gusto tenerte hoy por acá añorando un poquito de naturaleza!. Y es que si estás buscando lugares naturales increíbles, entonces llegaste al lugar ideal. Hoy vamos a compartirte una lista con varios de los mejores ${spinnedText(typeofPlaceLowerPlural)} en ${place.state}, para que si de naturaleza se trata ¡no te falten opciones!. \n\nEsta lista la preparamos con mucha atención, indagando en medios digitales, redes sociales, testimonios públicos y con incluso algunas entrevistas para determinar cuáles han sido los ${spinnedText(typeofPlaceLowerPlural)} que mejor han sido evaluados en ${place.state}.  \n\nAdemás de compartirte la lista final de ganadores, hemos incluido también sus contactos oficiales, horarios vigentes y medios logísticos (ej. mapas) para que puedas encontrar el lugar fácilmente.  \n\nAsí que nada, sin más demora, toma nota y ¡a disfrutar a tope la naturaleza en ${place.state}!.`,
+        ]
+        console.log('postIntroArr: ', postIntroArr.length)
+        
+        let indexPostIntro = place.postIntroIndex
+        let postIntroFinal = postIntroArr[indexPostIntro]
+        
         let textIntros = [
             // OJOOO MIL, LA PRIMERA OPCION NO TENIA BIEN LAS ESTRELLAS-- DECIA 4.5 -- VER SI ALGUNO DE OAXACA CAYO AQUI Y CORREGIR ESTRELLAS
             `Este ${spinnedText(typeOfPlaceArrlowerCase)} tiene  ${place.stars} estrellas de calificación promedio, a partir de las más de ${place.cantidadResenas} opiniones de sus visitantes... ¿nada mal no?. Es por esto que ${place.titleCaseName} es parte de esta lista de los ${spinnedText(typeofPlaceLowerPlural)} mejor calificados de ${place.state}. Con este respaldo estamos más que seguras(os) que se trata  de un sitio que vas a disfrutar al Máximo. Así que ya sabes, si lo que buscas es naturaleza, el ${spinnedText(typeOfPlaceArrlowerCase)} ${place.titleCaseName} en ${place.state} es sin duda una gran opción.`,
@@ -455,47 +503,51 @@ const aclaracionHorariosArr =[
             name : place.titleCaseName,
             state: place.state,
             rank: place.rank,
+            slug: place.slug,
             photoDownloadScript: place.photoDownloadScript,
             photoChangeNameScript: place.fileNameConversionScript,
             photoCanvaRenameScript: place.canvaRenameScript,
-            structuredDataIntro: `
-                <p> ¿Estás buscando los mejores parques ecoturísticos en ${place.state}? Entonces ¡estás en el lugar correcto!. \n\n Hoy vamos a mostrarte el resultado de nuestra investigación en torno a los ${spinnedText(typeofPlaceLowerPlural)} mejor evaluados en este estado. Para definir esta lista de los ganadores, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso algunas entrevistas directas. Este proceso nos permitió determinar cuáles son y dónde se ubican los ${spinnedText(typeofPlaceLowerPlural)} que mejores experiencias han dado a sus visitantes, y con mayor calificación en ${place.state} durante los últimos años. \n\n Con todo esto como respaldo, hoy te compartimos la lista de los ${spinnedText(typeofPlaceLowerPlural)} mejor calificados en ${place.state} en ${new Date().getFullYear()} junto con su ubicación, calificación promedio del lugar, medios oficiales de contacto, horarios y cómo llegar hasta ellos. \n Prepárate con esto y ¡a disfrutar del ecoturismo en ${place.state}!</p> 
-            `, 
-            structuredDataContent: `
-                <h2><b>${spinnedText(typeOfPlaceArrTitleCase)} ${place.titleCaseName}</b></h2>
-                <img src="${place.photoNewURL}" alt="${place.name}">   
-                <div>${place.iframe}</div>
-                <p>${indexText}</p>
-                <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArrTitleCase)} "${place.titleCaseName}"? </b></h3>
-                    <p>Este ${spinnedText(typeOfPlaceArrlowerCase)} se ubica en ${place.address}\n ${spinnedText(comoLlegarArr)}<a href='${place.googleMapsLink}'>Mapa del ${spinnedText(typeOfPlaceArrTitleCase)} ${place.titleCaseName}</a></p>
-                <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArrlowerCase)} ${place.titleCaseName}?</b></h3>
-                    <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArrTitleCase)} ${place.titleCaseName} son: </p>
-                    <ul>
-                        <li><b>Teléfono:</b> ${place.phone}</li>                                              
-                        <li><b>SitioWeb:</b> ${place.web.toString().includes('no disponible')?
-                        'No se cuenta con web oficial disponible'
-                        :
-                        `<a href="${place.web}">Web del ${place.titleCaseName}</a>`
-                        }</li>                                
-                    </ul>
-                <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArrlowerCase)} ${place.titleCaseName}?</b></h3>
-                    <div>
-                    ${place.horario === 'No se cuenta con horario oficial' ? 
-                        `<p> Lamentablemente este sitio no cuenta con horarios publicados oficialmente, posiblemente se deba a que hay variaciones frecuentes o temporales en sus horarios de operación.</p> \n <p>En estos casos, lo más recomendable es que cerca de tu fecha de visita, eches un ojo a sus sitios oficiales o los llames directamente (por tel, whatsapp o FB) para preguntar los horarios vigentes.</p>`
-                    :
-                        `<p>Los horarios oficiales del ${spinnedText(typeOfPlaceArrlowerCase)} ${place.titleCaseName} son los siguientes:</p>                       
-                        <ul>
-                            <li>${place.lunes}</li>
-                            <li>${place.martes}</li>
-                            <li>${place.miercoles}</li>
-                            <li>${place.jueves}</li>
-                            <li>${place.viernes}</li>
-                            <li>${place.sabado}</li>
-                            <li>${place.domingo}</li>
-                        </ul>
-                        <p>${spinnedText(aclaracionHorariosArr)}</p>`                                           
-                    }</div>
-            `,
+            postIntroIndex: indexPostIntro,
+            postIntroFinal: postIntroFinal,
+            indexText: indexText
+            // structuredDataIntro: `
+            //     <p>${postIntroFinal}</p> 
+            // `, 
+            // structuredDataContent: `
+            //     <h2><b>${spinnedText(typeOfPlaceArrTitleCase)} ${place.titleCaseName}</b></h2>
+            //     <img src="${place.photoNewURL}" alt="${place.name}">   
+            //     <div>${place.iframe}</div>
+            //     <p>${indexText}</p>
+            //     <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArrTitleCase)} "${place.titleCaseName}"? </b></h3>
+            //         <p>Este ${spinnedText(typeOfPlaceArrlowerCase)} se ubica en ${place.address}.\n\n${spinnedText(comoLlegarArr)}<a href='${place.googleMapsLink}'>Mapa del ${spinnedText(typeOfPlaceArrTitleCase)} ${place.titleCaseName}</a></p>
+            //     <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArrlowerCase)} ${place.titleCaseName}?</b></h3>
+            //         <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArrTitleCase)} ${place.titleCaseName} son: </p>
+            //         <ul>
+            //             <li><b>Teléfono:</b> ${place.phone}</li>                                              
+            //             <li><b>SitioWeb:</b> ${place.web.toString().includes('no disponible')?
+            //             'No se cuenta con web oficial disponible'
+            //             :
+            //             `<a href="${place.web}">Web del ${place.titleCaseName}</a>`
+            //             }</li>                                
+            //         </ul>
+            //     <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArrlowerCase)} ${place.titleCaseName}?</b></h3>
+            //         <div>
+            //         ${place.horario === 'No se cuenta con horario oficial' ? 
+            //             `<p> Lamentablemente este sitio no cuenta con horarios publicados oficialmente, posiblemente se deba a que hay variaciones frecuentes o temporales en sus horarios de operación.</p> \n <p>En estos casos, lo más recomendable es que cerca de tu fecha de visita, eches un ojo a sus sitios oficiales o los llames directamente (por tel, whatsapp o FB) para preguntar los horarios vigentes.</p>`
+            //         :
+            //             `<p>Los horarios oficiales del ${spinnedText(typeOfPlaceArrlowerCase)} ${place.titleCaseName} son los siguientes:</p>                       
+            //             <ul>
+            //                 <li>${place.lunes}</li>
+            //                 <li>${place.martes}</li>
+            //                 <li>${place.miercoles}</li>
+            //                 <li>${place.jueves}</li>
+            //                 <li>${place.viernes}</li>
+            //                 <li>${place.sabado}</li>
+            //                 <li>${place.domingo}</li>
+            //             </ul>
+            //             <p>${spinnedText(aclaracionHorariosArr)}</p>`                                           
+            //         }</div>
+            // `,
         }
 
         finalPlacesArray.push(finalObject)
@@ -504,13 +556,13 @@ const aclaracionHorariosArr =[
 
     console.log('Post Destructuring TextIntro: ', finalPlacesArray)
 
-    const workbook = XLSX.utils.book_new()
-    let worksheet = XLSX.utils.json_to_sheet(finalPlacesArray)
-    XLSX.utils.book_append_sheet(workbook,worksheet,'sheet1')
-    XLSX.writeFile(workbook, finalBlogFile)
+    // const workbook = XLSX.utils.book_new()
+    // let worksheet = XLSX.utils.json_to_sheet(finalPlacesArray)
+    // XLSX.utils.book_append_sheet(workbook,worksheet,'sheet1')
+    // XLSX.writeFile(workbook, finalBlogFile)
 
     
-    let stream = XLSX.stream.to_csv(worksheet);
-    stream.pipe(fs.createWriteStream(output_csv));
+    // let stream = XLSX.stream.to_csv(worksheet);
+    // stream.pipe(fs.createWriteStream(output_csv));
 
 

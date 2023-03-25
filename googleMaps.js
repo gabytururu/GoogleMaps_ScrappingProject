@@ -27,7 +27,7 @@ async function autoScroll(page,searchTerm){
 //async function scrapping(){
 (async()=>{
     let baseUrl = 'https://www.google.com/maps/search/parques+ecotur%C3%ADsticos+en+oaxaca+OR+centros+ecotur%C3%ADsticos+en+oaxaca+OR+parques+ecol%C3%B3gicos+en+oaxaca/@17.0685414,-96.7203396,11z/data=!4m2!2m1!6e1'
-    let totalResults = 120
+    let totalResults = 10
     let searchTerm = 'parques ecoturísticos en oaxaca OR centros ecoturísticos en oaxaca OR parques ecológicos en oaxaca'
     let typeOfPlace = 'Parque Ecoturístico'
     let corePlace = 'Oaxaca'
@@ -423,10 +423,10 @@ async function autoScroll(page,searchTerm){
     console.log('Total de placesData:', placesData.length)
     await browser.close()
 
-    const workbook = XLSX.utils.book_new()
-    let worksheet = XLSX.utils.json_to_sheet(placesData)
-    XLSX.utils.book_append_sheet(workbook,worksheet,'sheet1')
-    XLSX.writeFile(workbook, fileName)
+    // const workbook = XLSX.utils.book_new()
+    // let worksheet = XLSX.utils.json_to_sheet(placesData)
+    // XLSX.utils.book_append_sheet(workbook,worksheet,'sheet1')
+    // XLSX.writeFile(workbook, fileName)
 })()
 //}
 // scrapping()
