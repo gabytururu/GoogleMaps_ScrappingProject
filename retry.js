@@ -3,8 +3,8 @@ const fs = require('fs');
 
 // -----------download excel to json ----------------------------//
 
-const wbInput = 'parquesEcoturismoOaxaca.xlsx'
-const wsInput = 'Top15_OAX'
+const wbInput = 'parquesEcoturismoJalisco.xlsx'
+const wsInput = 'topFinal_JAL'
 const wbOutput = 'blogPostReady.xlsx'
 const csvOutput = 'Canva.csv';
 
@@ -14,6 +14,8 @@ const jsonResults = XLSX.utils.sheet_to_json(ws)
 
 console.log('jsonResult:', jsonResults)
 console.log('jsonResult Length:', jsonResults.length)
+console.log(jsonResults[0].titleCaseName)
+
 
 // ------------------------------general functions------------- //
 
@@ -113,6 +115,7 @@ let h2Intros = []
 let postVariablesArray =[]
 let coreContentArray =[]
 let photoScripts =[]
+let canvaScripts = []
 
 for (let place of jsonResults){
   
@@ -176,20 +179,26 @@ for (let place of jsonResults){
         photoDownloadScript: place.photoDownloadScript,       
         photoFileName: place.photoFileName,
         photoNewName: place.photoNewName,
+        photoNewNameNoAccent:place.photoNewNameNoAccent,
         photoNewFullFileName: place.photoNewFullFileName,
         canvaRenameScript: `ren "${place.rank}.jpg" "${place.photoNewFullFileName}"`,
         photoNewURL: place.photoNewURL,
         fileNameConversionScript: place.fileNameConversionScript,
         slug: place.slug,  
         h2Intro: h2Intros[h2IntroIndexArr_NoRepetition(h2Intros)],
+        postNote: `OJO: Hemos excluido de esta lista a los desarrollos ecoturísticos exclusivamente recreativos (ej. balnearios) que no cuentan con al menos un componente educativo ambiental o cultural (por ej. la posibilidad de contratar un guía local para conocer más sobre el entorno o sus activos naturales y culturales).`
       
     }
 
     let rankListObject = {
+      
         rank: postVariables.rank,
         name: postVariables.name,
+        postNote: `
+        <p class="has-background" style="background-color:#af6bb054;font-size:15px">${postVariables.postNote}</p>
+        `,
         postContent: `
-            <h2><b>${spinnedText(typeOfPlaceArrTitleCase)} ${postVariables.titleCaseName}</b></h2>
+            <h2><b>#${postVariables.rank} ${spinnedText(typeOfPlaceArrTitleCase)} ${postVariables.titleCaseName}</b></h2>
                 <div class="wp-block-columns">
                     <div class="wp-block-column">
                         <figure class="wp-block-image"><img src="${postVariables.photoNewURL}" alt="${postVariables.name}"/></figure> 
@@ -201,7 +210,7 @@ for (let place of jsonResults){
                 \n                
                 <p>${postVariables.h2Intro}</p>
                 <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArrTitleCase)} "${postVariables.titleCaseName}"? </b></h3>
-                    <p>Este ${spinnedText(typeOfPlaceArrlowerCase)} se ubica en ${postVariables.address}.\n\n${spinnedText(comoLlegarArr)}<a href='${postVariables.urlgMaps}'>Mapa del ${spinnedText(typeOfPlaceArrTitleCase)} ${postVariables.titleCaseName}</a></p>
+                    <p>Este ${spinnedText(typeOfPlaceArrlowerCase)} se ubica en ${postVariables.address}\n\n${spinnedText(comoLlegarArr)}<a href='${postVariables.urlgMaps}'>Mapa del ${spinnedText(typeOfPlaceArrTitleCase)} ${postVariables.titleCaseName}</a></p>
                 <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArrlowerCase)} ${postVariables.titleCaseName}?</b></h3>
                     <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArrTitleCase)} ${postVariables.titleCaseName} son: </p>
                     <ul>
@@ -238,12 +247,24 @@ for (let place of jsonResults){
         photoChangeNameScript: postVariables.fileNameConversionScript,
         canvaRenameScript: postVariables.canvaRenameScript,
     }
+
+    let canvaScriptsObj = {
+        placeName: postVariables.titleCaseName,
+        state: postVariables.state,
+        image: postVariables.photoNewFullFileName,
+    }
     
     postVariablesArray.push(postVariables)
     coreContentArray.push(rankListObject)
     photoScripts.push(photoScriptsObj)
+    canvaScripts.push(canvaScriptsObj)
 }
 
+let listofNames =[]
+postVariablesArray.map((element, i) => {
+    listofNames.push(`<li>${element.titleCaseName}</li>`)
+    return listofNames
+})
 
 h1Intros = [
     `¿Estás buscando opciones para hacer ecoturismo?, ¡llegaste al lugar correcto!, porque hoy vamos a mostrarte los resultados de nuestra investigación acerca de los mejores parques ecoturísticos en ${jsonResults[0].state}. \n\n Para definir esta lista de ganadores, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso algunas entrevistas directas. Este proceso nos permitió determinar cuáles son y en qué parte de ${jsonResults[0].state} se ubican los ${spinnedText(typeofPlaceLowerPlural)} que mejores experiencias han dado a sus visitantes y con mayor calificación durante los últimos años. \n\n Con todo esto como respaldo, hoy te compartimos la lista de los ganadores de este año junto con su ubicación, calificación promedio del lugar, medios oficiales de contacto, horarios y cómo llegar hasta ellos. \n\n Prepárate con esto y ¡a disfrutar del ecoturismo en ${jsonResults[0].state}!.`,
@@ -261,8 +282,9 @@ h1Intros = [
 let finalPost = [{
     state: jsonResults[0].state,
     type: 'Parques Ecoturísticos',
-    title: `Parques Ecoturísticos en ${jsonResults[0].state}: 10 Lugares Increibles para hacer Ecoturismo cuando andes por ${jsonResults[0].state}`,
+    title: `Parques Ecoturísticos en ${jsonResults[0].state}: 15 Lugares Increibles para hacer Ecoturismo en ${jsonResults[0].state} y sus alrededores.`,
     postIntro: h1Intros[h1IntroIndex_RepetitionOk(h1Intros)],
+    postNote: coreContentArray[0].postNote,
     placeRank1: coreContentArray[0].postContent,
     placeRank2: coreContentArray[1].postContent,
     placeRank3: coreContentArray[2].postContent,
@@ -278,21 +300,33 @@ let finalPost = [{
     placeRank13: coreContentArray[12].postContent,
     placeRank14: coreContentArray[13].postContent,
     placeRank15: coreContentArray[14].postContent,
+    placeRank16: coreContentArray[15].postContent,
+    placeRank17: coreContentArray[16].postContent,
+    placeRank18: coreContentArray[17].postContent,
+    placeRank19: coreContentArray[18].postContent,
+    placeRank20: coreContentArray[19].postContent,
+    placeRank21: coreContentArray[20].postContent,
+    placeRank22: coreContentArray[21].postContent,
+    placeRank23: coreContentArray[22].postContent,
+    //placeRank24: coreContentArray[23].postContent,
     slug: jsonResults[0].slug,
 }]
 
-
 console.log(finalPost)
 console.log(photoScripts)
+console.log(canvaScripts)
+
   
 
 const workbook = XLSX.utils.book_new()
 let worksheet = XLSX.utils.json_to_sheet(finalPost)
 let worksheet2 = XLSX.utils.json_to_sheet(photoScripts) 
+let worksheet3 = XLSX.utils.json_to_sheet(canvaScripts) 
 XLSX.utils.book_append_sheet(workbook,worksheet,'postContent')
 XLSX.utils.book_append_sheet(workbook,worksheet2,'photoScripts')
+XLSX.utils.book_append_sheet(workbook,worksheet3,'canvaScripts')
 XLSX.writeFile(workbook, wbOutput)
 
 
-// let stream = XLSX.stream.to_csv(worksheet);
-// stream.pipe(fs.createWriteStream(csvOutput));
+let stream = XLSX.stream.to_csv(worksheet3);
+stream.pipe(fs.createWriteStream(csvOutput));

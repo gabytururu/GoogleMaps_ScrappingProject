@@ -26,15 +26,16 @@ async function autoScroll(page,searchTerm){
 
 
 (async()=>{
-    let baseUrl = 'https://www.google.com.mx/maps/search/reservas+naturales+en+Morelos+OR+parques+nacionales+en+Morelos/@18.791605,-99.2792529,10z/data=!3m1!4b1'
+    let baseUrl = 'https://www.google.com/maps/search/viveros+en+tepic/@21.4898264,-104.9417262,12z'
     let totalResults = 120
-    let searchTerm = 'reservas naturales en Morelos OR parques nacionales en Morelos'
-    let typeOfPlace = 'Parque Ecoturístico'
-    let corePlace = 'Morelos'
-    let slug = 'parques-ecoturisticos-morelos'
-    let fileName = 'parquesEcoturismoMorelos_ANP.xlsx'
-    let sheetName = 'fullDB_MOR'
-    let targetWebsite = 'rumbonaturaleza.com'
+    let searchTerm = 'viveros en tepic'
+    let typeOfPlace = 'viveros'
+    let corePlace = 'tepic'
+    let state = 'nayarit'
+    let slug = `${typeOfPlace}-en-${corePlace}-${state}`
+    let fileName = 'viveros_tepicNAY.xlsx'
+    let sheetName = 'fullDB_tepicNAY'
+    let targetWebsite = 'tierradeplantas.com'
     
    
     const browser = await puppeteer.launch({headless:false}) //slowMo: 300
@@ -73,7 +74,7 @@ async function autoScroll(page,searchTerm){
         const mapWidth = iframeMap.replace('width="600"','width="390"')
         const iframeResized = mapWidth.replace('height="450"','height="420"')
        
-        const placeSpecifics = await page.evaluate((typeOfPlace,corePlace,acct,targetWebsite,iframeResized, slug)=>{
+        const placeSpecifics = await page.evaluate((typeOfPlace,state, corePlace,acct,targetWebsite,iframeResized, slug)=>{
             const placeInfo ={}
             const placeName = document.querySelector('h1.DUwDvf.fontHeadlineLarge').textContent 
 
@@ -111,12 +112,14 @@ async function autoScroll(page,searchTerm){
                     resultPhone = true
                 }else {
                     resultPhone = false
-                }            
+                }         
+
                 if (array.find(arrEl => arrEl.includes('web'))){
                     resultWeb = true
                 }else{
-                resultWeb = false
-                }            
+                    resultWeb = false
+                }           
+                 
                 if (resultPhone && resultWeb){
                     bothResults = true
                 }else {
@@ -137,16 +140,23 @@ async function autoScroll(page,searchTerm){
                     web = 'Web no disponible'
                     address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
                     city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent 
-            }else if (missingDataArr.find(missingData => missingData.includes('teléfono'))){
+            }else if (missingDataArr.find(missingData => missingData.includes('teléfono')) && missingDataArr.find(missingData => !missingData.includes('web'))){
                     phone = 'No cuenta con teléfono'
                     address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
                     web = document.querySelectorAll('a.CsEnBe')[1].href
                     city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent 
-            }else if(missingDataArr.find(missingData => missingData.includes('web'))){
+            }else if(missingDataArr.find(missingData => missingData.includes('web')) && missingDataArr > 2 ){
+                    // if(document.querySelectorAll('.Io6YTe.fontBodyMedium')[2] === 'undefined'){
+                    //     city = 'La ciudad de este sitio no está disponible'
+                    // }else{
+                    //     city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent
+                    // }
+
                     web = 'Web no disponible'
                     address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent 
                     phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent  
-                    city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent 
+                    //city = city
+                    city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent
             }else if (dataSize <= 2){
                     phone = 'no cuenta con teléfono'  
                     web = 'Web no disponible'              
@@ -177,18 +187,11 @@ async function autoScroll(page,searchTerm){
             }else{
                 photo = document.querySelector('.aoRNLd.kn2E5e.NMjTrf.lvtCsd img').currentSrc
             }
-
-           
-            
-            
-            // placeInfo.photoNewName = `${placeInfo.name.replace(/\s/ig,'_')}_${acct}`
-            
             
             let photoFileName = photo.replace('https://lh5.googleusercontent.com/p/','')           
             photoFileName = photoFileName.replace('https://lh3.googleusercontent.com/gps-proxy/','')             
             //let photoNewName = `${placeInfo.name.replace(/\s/ig,'_')}_${acct}`
             const removeAccents = (str) => {
-               // let noAccents = str.normalize('NFD').replace(/[\u300-\u036f]/g,'')
                 let noAccents = str.normalize("NFD").replace(/\p{Diacritic}/gu, "")
                 return noAccents
             }
@@ -293,7 +296,8 @@ async function autoScroll(page,searchTerm){
                 placeInfo.horarioSabado = horarioOrganized.sabado
                 placeInfo.horarioDomingo = horarioOrganized.domingo
                 placeInfo.cityClean = city.slice(8,)
-                placeInfo.state = corePlace
+                placeInfo.searchedCity = corePlace
+                placeInfo.searchedState = state
                 placeInfo.urlgMaps = document.querySelectorAll('.DUwDvf.fontHeadlineLarge span')[0].baseURI
                 placeInfo.iframeMap = iframeResized
                 placeInfo.city= city
@@ -313,7 +317,7 @@ async function autoScroll(page,searchTerm){
                 placeInfo.slug = slug
                 placeInfo.missingData = missingDataArr.toString()          
                 return placeInfo
-        },typeOfPlace, corePlace,acct,targetWebsite,iframeResized, slug)
+        },typeOfPlace, state, corePlace,acct,targetWebsite,iframeResized, slug)
 
         acct++
         placesData.push({acct,...placeSpecifics})
