@@ -52,7 +52,8 @@ const puppeteer = require ('puppeteer');
             return bothResults
         }
 
-        let dataSize = document.querySelectorAll('.Io6YTe.fontBodyMedium').length  
+        let dataSize = document.querySelectorAll('.Io6YTe.fontBodyMedium').length
+
         if(document.querySelector('.Io6YTe.fontBodyMedium') === null){
             phone = 'No cuenta con teléfono'  
             web = 'Web no disponible'              
@@ -80,12 +81,12 @@ const puppeteer = require ('puppeteer');
             address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
             city = 'No cuenta con ciudad'
         }else if(bothPhAndWebMissing(missingDataArr)===false && onlyPhoneMissing(missingDataArr) === true && dataSize === 2){
-            phone = 'no se cuenta con teléfono'
+            phone = 'No cuenta con teléfono'
             web = document.querySelectorAll('a.CsEnBe')[1].href
             address = 'No cuenta con dirección'
             city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
         }else if(bothPhAndWebMissing(missingDataArr)===false && onlyPhoneMissing(missingDataArr) === true && dataSize > 2){
-            phone = 'no se cuenta con teléfono'
+            phone = 'No cuenta con teléfono'
             web = document.querySelectorAll('a.CsEnBe')[1].href
             address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
             city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent
@@ -104,12 +105,28 @@ const puppeteer = require ('puppeteer');
             web = 'Web no disponible' 
             address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
             city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent
-        }else if(onlyWebMissing(missingDataArr) === false && onlyPhoneMissing(missingDataArr) === false && dataSize > 2){
+        }else if(onlyWebMissing(missingDataArr) === false && onlyPhoneMissing(missingDataArr) === false && dataSize === 2){
+            phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent
+            web = document.querySelectorAll('a.CsEnBe')[1].href
+            address = 'No cuenta con dirección'
+            city = 'No cuenta con ciudad'
+        }else if(onlyWebMissing(missingDataArr) === false && onlyPhoneMissing(missingDataArr) === false && dataSize === 3){
             phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent
             web = document.querySelectorAll('a.CsEnBe')[1].href
             address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
-            city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[3].textContent
+            city = 'No cuenta con ciudad'
+        }else if(onlyWebMissing(missingDataArr) === false && onlyPhoneMissing(missingDataArr) === false && dataSize >= 4){
+            phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent
+            web = document.querySelectorAll('a.CsEnBe')[1].href
+            address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+            city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[3].textContent   
+        }else{
+            phone = 'caso excepcional revisar caso'
+            web = 'caso excepcional revisar caso'
+            address = 'caso excepcional revisar caso'
+            city = 'caso excepcional revisar caso' 
         }
+
 
         placeInfo.name= placename
         placeInfo.address = address
@@ -130,4 +147,74 @@ const puppeteer = require ('puppeteer');
 })()
 
 
+// --- version sustituida -----//
 
+
+// function checkData (array){
+//     if(array.find(arrEl => arrEl.includes('teléfono'))){
+//         resultPhone = true
+//     }else {
+//         resultPhone = false
+//     }         
+
+//     if (array.find(arrEl => arrEl.includes('web'))){
+//         resultWeb = true
+//     }else{
+//         resultWeb = false
+//     }           
+     
+//     if (resultPhone && resultWeb){
+//         bothResults = true
+//     }else {
+//         bothResults = false
+//     }
+
+//     return bothResults
+// }
+
+//-----------------------------------------------//
+
+// let dataSize = document.querySelectorAll('.Io6YTe.fontBodyMedium').length                
+// if(document.querySelector('.Io6YTe.fontBodyMedium') === null){
+//         phone = 'No cuenta con teléfono'  
+//         web = 'Web no disponible'              
+//         address = 'No cuenta con dirección'
+//         city = 'No cuenta con ciudad'  
+// }else if(missingDataArr.find(missingData => missingData.includes('teléfono')) && missingDataArr.find(missingData => missingData.includes('web')) ){
+//         phone = 'No cuenta con teléfono'
+//         web = 'Web no disponible'
+//         address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+//         city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent 
+// }else if (missingDataArr.find(missingData => missingData.includes('teléfono')) && missingDataArr.find(missingData => !missingData.includes('web'))){
+//         phone = 'No cuenta con teléfono'
+//         address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+//         web = document.querySelectorAll('a.CsEnBe')[1].href
+//         city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent 
+// }else if(missingDataArr.find(missingData => missingData.includes('web')) && missingDataArr > 2 ){
+//         // if(document.querySelectorAll('.Io6YTe.fontBodyMedium')[2] === 'undefined'){
+//         //     city = 'La ciudad de este sitio no está disponible'
+//         // }else{
+//         //     city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent
+//         // }
+
+//         web = 'Web no disponible'
+//         address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent 
+//         phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent  
+//         //city = city
+//         city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent
+// }else if (dataSize <= 2){
+//         phone = 'no cuenta con teléfono'  
+//         web = 'Web no disponible'              
+//         address = 'no cuenta con dirección'
+//         city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent   
+// }else if(dataSize === 3 && checkData(missingDataArr) === false ){
+//         address= 'No cuenta con dirección'
+//         web = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent 
+//         phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent  
+//         city = 'no cuenta con ciudad'
+// }else {
+//         address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent 
+//         web = document.querySelectorAll('a.CsEnBe')[1].href
+//         phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent  
+//         city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[3].textContent 
+// };
