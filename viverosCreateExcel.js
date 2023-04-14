@@ -1,10 +1,11 @@
 const XLSX = require('xlsx');
 const fs = require('fs');
+const { table } = require('console');
 
 // -----------download excel to json ----------------------------//
 
-const wbInput = 'viveros_cancunQROOB.xlsx'
-const wsInput = 'topFinal_cancunQROO'
+const wbInput = 'viveros_queretaroQRO.xlsx'
+const wsInput = 'topFinal_queretaroQRO'
 const wbOutput = 'blogPostReady.xlsx'
 const csvOutput = 'Canva.csv';
 
@@ -14,7 +15,7 @@ const jsonResults = XLSX.utils.sheet_to_json(ws)
 
 // console.log('jsonResult:', jsonResults)
 // console.log('jsonResult Length:', jsonResults.length)
-console.log(jsonResults[0].searchedCity)
+//console.log(jsonResults[0].searchedCity)
 
 
 // ------------------------------general functions------------- //
@@ -24,33 +25,9 @@ function spinnedText(textOptionsArr){
     return selectedText
 }
 
-// function h1IntroIndex_RepetitionOk(h1Intros){
-//     let randomIndex = Math.floor(Math.random() * h1Intros.length)
-//     return randomIndex
-// }
+// ----------------------------general arrays------------------- //
 
-// let h2IntrosArr = []
-// function h2IntroIndexArr_NoRepetition(h2Intros){
-//     let randomIndex = Math.floor(Math.random() * h2Intros.length)
-//     do{
-//         randomIndex = Math.floor(Math.random() * h2Intros.length)
-//     }while(h2IntrosArr.includes(randomIndex))
 
-//     h2IntrosArr.push(randomIndex)
-//     return randomIndex  
-// }
-
-// -------general arrays to be used w textSpinner - BlogPost Content----- //
-
-// const typeOfPlaceArrTitleCase = [
-//     'Vivero'
-// ]
-// const typeOfPlaceArrlowerCase = [
-//     'vivero', 
-// ]
-// const typeofPlaceLowerPlural =[
-//     'viveros' 
-// ]
 const comoLlegarArr = [
     'Para llegar, puedes símplemente colocar esta dirección en el googleMaps o Waze o apoyarte en este ',
     'Para ir a este lugar usar esa dirección en un gps o ayudarte con este ',
@@ -106,9 +83,6 @@ const aclaracionHorariosArr =[
     'Aunque los horarios estén oficialmente vigentes, es bueno que cheques en sus redes y canales digitales el estátus del centro o parque antes de ir. Así te aseguras de que no ha habido cambios especiales o cierres extraordinarios por feriados o holidays especiales',
     'Es importante revisar en sus redes sociales o contactos digitales antes de ir, incluso si ya tienes los horarios oficiales, para evitar cualquier cambio logístico o de horario de última hora',     
 ]
-// let h1Intros = []
-
-// let h2Intros = []
 
 //----------------- Blog post construction loop ------------//
 
@@ -116,44 +90,9 @@ let postVariablesArray =[]
 let coreContentArray =[]
 let photoScripts =[]
 let canvaScripts = []
+let tableOfContent =[]
 
-for (let place of jsonResults){
-  
-    // h2Intros = [
-    //     // OJOOO MIL, LA PRIMERA OPCION NO TENIA BIEN LAS ESTRELLAS-- DECIA 4.5 -- VER SI ALGUNO DE OAXACA CAYO AQUI Y CORREGIR ESTRELLAS
-    //     `Este vivero tiene ${place.stars} estrellas de calificación promedio, a partir de las más de ${place.cantidadResenas} opiniones de sus visitantes... ¿nada mal no?. Es por esto que ${place.titleCaseName} es parte de esta lista de los viveros mejor calificados de ${place.state}. Con este respaldo estamos más que seguras(os) que se trata  de un sitio que vas a disfrutar al Máximo. Así que ya sabes, si lo que buscas es naturaleza, el vivero ${place.titleCaseName} en ${place.state} es sin duda una gran opción.`,
-    //     `Con una calificación promedio de ${place.stars} estrellas y más de ${place.cantidadResenas} opiniones positivas, ¡ ${place.titleCaseName} en ${place.state} es otra de las alternativas infaltables esta lista de mejores viveros!. Si lo tuyo son entornos naturales, no tenemos duda de que este parque te permitirá disfrutar al máximo tu experiencia. Así que no dudes - ${place.titleCaseName} será una excelente elección para hacer ecoturismo en esta región.`,
-    //     `Otra gran opción para tí, si te gusta estar en contacto con la naturaleza y estás buscando lugares para hacer ecoturismo en ${place.state}, es sin duda ${place.titleCaseName}!. Con un promedio de ${place.stars} estrellas evaluadas por al menos ${place.cantidadResenas} visitantes, este vivero es uno de los favoritos de acá. Así que si ya estás lista(o), prepárate para sumergirte en los paisajes naturales e inolvidables de${place.state} y ¡aventúrate a conocer ${place.titleCaseName}!.`,
-    //     `Siguiendo con esta lista, ahora pasamos a ${place.titleCaseName}. Y es que si eres de quienes ama estar en contacto con la naturaleza y andas por ${place.state}, entonces tienes que considerar la experiencia de visitar el vivero ${place.titleCaseName}. Con una calificación promedio de ${place.stars} estrellas a partir de reviews de más de ${place.cantidadResenas} presonas, no tenemos duda de es también una gran opcíon. Así que toma nota de todos sus datos y prográmate para sumergirte en los paisajes naturales de ${place.state} y vive el ecoturismo que te ofrece ${place.titleCaseName}.`,
-    //     `El vivero ${place.titleCaseName} es también parte de esta lista, pues se trata de opción fantástica para tener una aventura natural en ${place.state}. Su calificación promedio es de ${place.stars} estrellas, a partir de la opinión respaldada por más de ${place.cantidadResenas} visitantes. Por ello, no tenemos duda de que este sitio debe pertenecer a la lista de los viveros mejor rankeados de  ${place.state}, pues se trata de uno de los atractivos naturales más bonitos en la región. Así que ya sabes... ¿ganas de naturaleza?... pues apúnta todos los datos siguientes, porque el vivero ${place.titleCaseName} es una grandísima opción.`,
-    //     `El vivero ${place.titleCaseName} es nuestra siguiente recomendación. Una de las opciones inmejorables para vivir la naturaleza en ${place.state}. Con ${place.stars} estrellas y el aval de al menos ${place.cantidadResenas} visitantes con opiniones positivas, este vivero se ha posicionado como uno de los mejores de por acá, y es un atractivo natural obligado si lo que buscas es un hacer algo de ecoturismo. Entonces, apúntate también todos sus detalles y ponte en ruta a las ${place.titleCaseName}.`,
-    //     `Si te apasiona la naturaleza y andas en busca de aventuras ¡pues no se diga más! porque sin duda el vivero ${place.titleCaseName} es otra de las alternativas en ${place.state} que no debes dejar pasar. Este vivero tiene una calificación promedio de ${place.stars} estrellas, gracias a que al menos ${place.cantidadResenas} personas distintas lo han evaluado de este modo... motivo por el que forma parte de este rank de los mejores. Así es que... siendo uno de los viveros mejores calificados en ${place.state} ¿qué esperas para visitarlo?`,
-    //     `Otra excente opción si andas buscando naturaleza para descansar y salir de lo cotidiano es el vivero ${place.titleCaseName}. Acá encontrarás algunos de los paisajes más bonitos y naturales de ${place.state}. Este sitio tiene una calificación promedio de 4.5estrellas, y al menos ${place.cantidadResenas} reseñas de visitantes que ya lo han disfrutado. Por esto, es uno de los más concurridos de este estado. Así que nada... sin excusas y ¡a vivir esta experiencia en la naturaleza! en ${place.titleCaseName}.`,
-    //     `Entendemos que si estás aquí, es porque quieres conocer más opciones para conectarte con la naturaleza y disfrutarla a tope en ${place.state}. Y pues bueno... el vivero ${place.titleCaseName}} puede ser la respuesta que buscabas. Este vivero ha sido evaluado por más de ${place.cantidadResenas} personas con un promedio de calificación de  ${place.stars} estrellas, haciéndolo uno de los viveros más recomendados de ${place.state}. Así que nada.. a pasar del pensamiento a la acción y a poner ${place.titleCaseName} en tu ruta de ecoturismo ¡pero ya!.`,
-    //     `Otro de los sitios naturales más memorables de ${place.state} es sin duda alguna el vivero ${place.titleCaseName}. Este lugar está respaldado por un montón de visitantes previos y más de ${place.cantidadResenas} evaluaciones promedio que rondan las ${place.stars} estrellas, lo que lo hace un favorito de la región. Es por eso que forma parte de esta lista de los mejores viveros de ${place.state}, y es por eso también que nos parece una recomendación imperdible para ti.`,
-    //     `${place.titleCaseName} es nuestra siguiente recomendación. Se trata de uno de los sitios naturales más lindos que ${place.state} tiene para ofrecer. Está respaldado por la aprobación de más de ${place.cantidadResenas} opiniones que en promedio le han otorgado ${place.stars} estrellas, haciéndolo un favorito por acá, y volviéndolo una parada obligada en esta lista de los mejores vivero de ${place.state}.`,
-    //     `Si andas en búsca de experiencias únicas en la naturaleza, entonces el vivero ${place.titleCaseName} en ${place.state} tiene que ser también parte de tu lista. Este es un vivero con más de ${place.cantidadResenas} opiniones de visitantes y que ha sido de manera consistente calificado con hasta ${place.stars} estrellas, es por eso que aunque pueda tener algunas áreas de mejora, es uno de los mejores lugares para disfrutar de la naturaleza de este estado. Así que no lo pienses mucho más y ¡a visitar ${place.titleCaseName}!`,
-    //     `El vivero ${place.titleCaseName} el siguiente en esta lista. Este vivero es una de las joyas naturales que tiene ${place.state} para los aficionados al ecoturismo y la aventura. Se trata de un lugar evaluado en promedio con ${place.stars} estrellas por al menos ${place.cantidadResenas} personas. No podemos dejar de recomendártelo como un una opción importante para la exploración natural de Tabasco ${place.state}. Así que ya sabes, guárdate toda la información logística que vamos a darte a continuación y anímate a visitar este increíble vivero cuanto antes.`,
-    //     `Si se trata de explorar la belleza natural de ${place.state}, entonces el vivero ${place.titleCaseName} es lo que llamamos un "must". Este vivero está recomendado por más de ${place.cantidadResenas} opiniones de visitantes que lo han evaluado hasta con ${place.stars} estrellas. Se trata de uno de los espacios naturales más amenos de la región y una alternativa que no debes dejar de visitar si andas por ${place.state} buscando algo de naturaleza.`,
-    //     `Nuestra siguiente gran opción para quienes disfrutan de los paisajes naturales es el vivero ${place.titleCaseName} en ${place.state}. Con más de ${place.cantidadResenas} opiniones de visitantes y una calificación promedio de ${place.stars} estrellas, este lugar es uno de los más valorados en la región, así que toma nota de sus datos a continuación y programa tu visita ¡pero ya!.`,
-    //     `¿Quieres vivir un paseo increible en contacto con la naturaleza? entonces el siguiente lugar en nuestra lista no te va a defraudar. Y es que si andas de visita o vives en ${place.state}, tienes que considerar una vuelta al vivero ${place.titleCaseName}. Con una calificación promedio de ${place.stars} estrellas y más de ${place.cantidadResenas} reviews, este lugar es una de las mejores opciones para los amantes del ecoturismo y la aventura en la naturaleza. ¡Toma nota de todo lo requerido para tu visita con la información a continuación!.`,
-    //     `El siguiente destino en esta lista es ${place.titleCaseName}. Si lo que quieres es encontrar un lugar para conectarte con la naturaleza, el vivero ${place.titleCaseName} será una de tus mejores apuestas. Este sitio forma parte de esta lista de los mejores viveros de ${place.state} gracias al respaldo y opiniones de más de ${place.cantidadResenas} visitantes que le han otorgado una calificación de más de ${place.stars} estrellas en promedio. Este lugar es sin duda uno de los mejores para disfrutar del entorno natural y paisajes de ${place.state} y practicar el ecoturismo y la aventura en la región.`,
-    //     `Otra súper opción si estás en ${place.state} en búsqueda de algo de ecoturismo y aventura es el vivero ${place.titleCaseName}. Hemos decidido incluir este vivero en esta lista de los mejores de ${place.state} gracias al respaldo y opiniones de más de ${place.cantidadResenas} visitantes que lo han evaluado públicamente por lo menos con ${place.stars} estrellas de calificación, así que a tí no se te puede escapar. Chécate todos lo detalles necesarios para tu visita y dale con todo para levantar el ecoturismo en ${place.state} apoyando y disfrutando ${place.titleCaseName}.`,
-    //     `Nuestra siguiente recomendación es vivero ${place.titleCaseName}. Si lo que buscas es conectar con la naturaleza de ${place.state}, entonces -sí o sí- toca visitar este lugar. Este es uno de los viveros que resultó mejor evaluados en ${place.state} (con ${place.stars} estrellas y más de ${place.cantidadResenas} opiniones públicas de visitantes), lo que lo hace también un favorito de los amantes del ecoturismo y la aventura natural. Si andas en busqueda justo de eso, entonces revisa los detalles siguientes para tener una visita segura y ¡lánzate al parque ${place.titleCaseName}!`,
-    //     `Ok... ¿Te gusta el ecoturismo y andas en ${place.state} buscando algo de aventura natural no? Entonces agrega ya mismo en tu lista al vivero ${place.titleCaseName}. Este es un lugar ideal para encontrarte con la naturaleza y disfrutar de paisajes lindos. Es un vivero que ha sido evaluado por más de ${place.cantidadResenas} personas y tiene un promedio de ${place.stars} estrellas de calificación. Aunque puede que haya algunos detallitos que es posible mejorar, la realidad es que ${place.titleCaseName} es un paso obligado para explorar la naturaleza de ${place.state} y hacer algo de ecoturismo por acá.`,
-    //     `Vamos con el siguiente de esta lista: ${place.titleCaseName}. Si te apasiona el ecoturismo y estas buscando explorar la naturaleza increíble de ${place.state}, la verdad es que no puedes perderte ${place.titleCaseName}. Este vivero es el sitio ideal para disfrutar paisajes naturales lindos y desconectarte un poco de la urbe. Más de ${place.cantidadResenas} personas lo han evaluado con un promedio de ${place.stars} estrellas. Aunque hay algunos detallitos que se pueden mejorar, definitivamente es una súper opción si lo que buscas es una experiencia cargada de naturaleza.`, 
-    //     `${place.titleCaseName} es el siguiente de los viveros más populares de ${place.state}. Este sitio logró un promedio de calificación de ${place.stars} estrellas de más de ${place.cantidadResenas} visitantes, pues se trata de un lugar perfecto para disfrutar el paisaje y los entornos naturales de ${place.state}. Entonces... anótate toda su información para que puedas visitar el vivero ${place.titleCaseName} cuanto antes.`,
-    //     `${place.titleCaseName} es la siguiente parada obligatoria en esta lista de los mejores vivero para hacer ecoturismo en ${place.state}. Este parque ha recibido un promedio de ${place.stars} estrellas según los ${place.cantidadResenas} visitantes que lo han evaluado públicamente. Nada mal para esta región. Así que no lo pienses mas, conoce todos los detalles para llegar de manera segura y lánzate a disfrutar de sus espacios naturales y paisajes y ¡a vivir el ecoturismo en ${place.state} a tope`, 
-    //     `${place.titleCaseName} es el siguiente destino ideal para quien busca disfrutar del ecoturismo y la naturaleza en ${place.state}. Este lugar cuenta con un promedio de ${place.stars} estrellas según los ${place.cantidadResenas} visitantes que lo han calificado. En este lugar podrás conocer ${place.state} desde una perspectiva diferente, rodeándote de espacios lindos y de opciones para disfrutar la naturaleza. Revisa todos los detalles a continuación y programa tu visita cuanto antes.`,
-    //     `${place.titleCaseName} es el siguiente en esta lista de viveros imperdibles de ${place.state}.Este lugar tiene un promedio de ${place.stars} estrellas de calificación, obtenidas con reviews y opiniones de por lo menos ${place.cantidadResenas} visitantes. Se trata de un lugar re-lindo para disfrutar el paisaje y toda la naturaleza de ${place.state}... Otra gran opción para tu lista de lugares para hacer ecoturismo en esta zona del país. Toma nota y lánzate a ${place.titleCaseName}`,
-    //     `El vivero ${place.titleCaseName} en ${place.state} es la siguiente opción en nuestra lista. Una rre buena alternativa para hacer ecoturismo por acá. Con una calificación promedio de ${place.stars} derivada de reseñas de más de ${place.cantidadResenas} personas, este lugar es considerado uno de los mejores vivero de la región. Es por eso que forma parte de esta lista. Entonces ya sabes... si la naturaleza y la aventura te motivan, no puedes dejar de visitar ${place.titleCaseName} y sumergirte en los paisajes naturales de ${place.state}.`,
-    //     `Para una gran experiencia de ecoturismo en ${place.state}, está el vivero ${place.titleCaseName}. Decidimos agregar este sitio a la lista de los mejores viveros de este estado, gracias al aval de ${place.stars} estrellas que más de ${place.cantidadResenas} visitantes le han dado. Entonces si te gusta estar rodeado de paisajes lindos, y vegetación nativa, etnonces este sitio es una de las opciones perfectas para tí para ti. Ponlo en tu lista ya mismo y aventúrate a conocer la naturalza de ${place.state} visitando ${place.titleCaseName}.`,
-    //     `Si de atractivos naturales hablamos, entonces ${place.titleCaseName} es uno de los principale de ${place.state}. Este parque ecoturístico es una de las opciones imperdibles para conocer la naturaleza de esta región en todo su esplendor. Este vivero tiene ${place.stars} estrellas de calificación respaldadas por opiniones de hasta ${place.cantidadResenas} visitantes. Es por eso que forma parte de esta lista como uno de los mejores lugares para hacer ecoturismo por acá, y por ese mismo motivo es uno de los viveros que -sí o sí- tienes que visitar.`, 
-    //     `Si mueres de curiosidad y ganas de estar en contacto con la naturaleza, entonces tienes que conocer el parque ecoturístico ${place.titleCaseName} en ${place.state}. Este sitio ha sido evaluado con ${place.stars} estrellas en promedio por más de ${place.cantidadResenas} personas, lo que lo hace una opción fantástica para tener una aventura natural si estás por esta zona del país. No lo dudes más y simplemente toma nota de sus datos y ¡lánzate a conocer sus paisajes y vive el ecoturismo a tope!. `,
-    //     `Si quieres escapar de la rutina y disfrutar de la naturaleza a full, el parque ecoturístico ${place.titleCaseName} -si o sí- es una opción que debe estar en tu lista. Este vivero ha sido evaluado por más de ${place.cantidadResenas} visitantes, quienes lo han posicionado como uno de los mejores de ${place.state}, (con ${place.stars} estrellas en promedio). Es por eso que hemos decidido hacerlo parte de esta lista de los mejores, y dejártelo en las recomendaciones si lo que buscas es respirar naturaleza al máximo. `,
-    //     `¿Quieres disfrutar de la naturaleza en ${place.state} al máximo? Entonces el parque ecoturístico ${place.titleCaseName} es lo que llamamos un "MUST" o una "parada obligada". Este vivero tiene una calificación promedio de ${place.stars} estrellas y más de ${place.cantidadResenas} opiniones positivas de quienes lo han visitado anteriormente. Por esas razones ${place.titleCaseName} se ha consolidado como uno de los principales atractivos naturales de ${place.state} y uno de los mejores sitios para hacer ecoturismo en esta región.`,
-    //     `Otro lugar ideal si estás buscando un espacio para conectarte con la naturaleza y disfrutarla a lo más es  ${place.titleCaseName}. Esta es una de las mejores opciones de ${place.state}, con más de ${place.cantidadResenas} opiniones positivas de sus visitantes, quienes lo han calificado en promedio como un sitio de ${place.stars} estrellas. Todo esto lo mantiene como uno de los centros ecoturísticos más concurridos de la región. Entonces ya sabes, si andas por ${place.state}, aprovecha la oportunidad y organízate para visitar ${place.titleCaseName}.`,
-    // ]
+for (let place of jsonResults){  
 
     let postVariables = {
         rank: place.rank,
@@ -190,6 +129,14 @@ for (let place of jsonResults){
         postNote: `Nota: Los horarios y contactos de los viveros incluidos en esta lista fueron tomados de sus sitios y publicidad oficial. Si existe algún error ¡por favor no dudes en contactarnos! para hacer las correcciones pertinentes`
     }
 
+    function createNodeId(str){
+        let placeName = str.toLowerCase()
+        let noAccents = placeName.normalize("NFD").replace(/\p{Diacritic}/gu,"")
+        let dashedName = noAccents.replace(/\s/ig,"-")
+        let cleanFinalId = dashedName.replace('""','').replace('(','').replace(')','')
+        return cleanFinalId
+    }
+
     let rankListObject = {
         rank: postVariables.rank,
         name: postVariables.name,
@@ -199,16 +146,11 @@ for (let place of jsonResults){
                 ${postVariables.postNote}
             </p>
         `,
-           // <p class="has-background" style="background-color:#C8F9DD;font-size:15px">
-            // ${postVariables.postNote}
-            // </p>
         separator: `
             <hr class="wp-block-separator has-text-color has-ast-global-color-3-color has-alpha-channel-opacity has-ast-global-color-3-background-color has-background is-style-wide" style="margin-top:var(--wp--preset--spacing--50);margin-bottom:var(--wp--preset--spacing--50)"/>
         `,
-        
-        //<h2><b>${postVariables.titleCaseName}</b></h2>
         postContent:`
-            <h2 class="wp-block-heading has-ast-global-color-4-color has-ast-global-color-3-background-color has-text-color has-background" id="jardin-cubilete" style="padding-top:12px;padding-right:12px;padding-bottom:12px;padding-left:12px"><b>${postVariables.titleCaseName}</b></h2>
+            <h2 class="wp-block-heading has-ast-global-color-4-color has-ast-global-color-3-background-color has-text-color has-background" id="${createNodeId(postVariables.titleCaseName)}" style="padding-top:12px;padding-right:12px;padding-bottom:12px;padding-left:12px"><b>${postVariables.titleCaseName}</b></h2>
             <div class="wp-block-columns" style="padding:0px;">
                 <div class="wp-block-column" style="margin:10px">
                     ${postVariables.iframe}
@@ -232,7 +174,7 @@ for (let place of jsonResults){
                     <h3 style="font-size:20px">Dirección ${postVariables.titleCaseName}:</h3>
                     <p>La dirección oficial de este vivero es ${postVariables.address}</p>             
                 </div>
-            </div>\n
+            </div>
                 <p>${spinnedText(comoLlegarArr)}<a href='${postVariables.urlgMaps}'>Mapa del Vivero ${postVariables.titleCaseName}</a></p>  
                 <h3>¿En qué horarios está abierto ${postVariables.titleCaseName}?</h3>  
                 ${postVariables.horario === 'No se cuenta con horario oficial' ? 
@@ -251,53 +193,9 @@ for (let place of jsonResults){
                     <p>${spinnedText(aclaracionHorariosArr)}</p>`                                           
                 }
                 <h3>Calificación promedio de ${postVariables.titleCaseName}</h3>
-                <p>El vivero ${postVariables.titleCaseName} tiene un promedio de ${postVariables.stars} estrellas (de 5 en total), como resultado de un análisis de ${postVariables.cantidadResenas} reseñas públicas encontradas.</p>  
+                <p>Los clientes y visitantes anteriores le han dado a ${postVariables.titleCaseName}  un promedio de ${postVariables.stars} estrellas (de 5 en total). Esta calificación fué obtenida a partir de analizar aproximadamente ${postVariables.cantidadResenas} reseñas públicas encontradas.</p>  
                 <hr class="wp-block-separator has-text-color has-ast-global-color-3-color has-alpha-channel-opacity has-ast-global-color-3-background-color has-background is-style-dots" style="margin-top:var(--wp--preset--spacing--50);margin-bottom:var(--wp--preset--spacing--50)"/>                 
         `,
-        
-        // `
-        //     <h2><b>#${postVariables.rank} ${spinnedText(typeOfPlaceArrTitleCase)} ${postVariables.titleCaseName}</b></h2>
-        //         <div class="wp-block-columns">
-        //             <div class="wp-block-column">
-        //                 <figure class="wp-block-image"><img src="${postVariables.photoNewURL}" alt="${postVariables.name}"/></figure> 
-        //             </div>
-        //             <div class="wp-block-column">                        
-        //                <p>${postVariables.iframe}</p>
-        //             </div>
-        //         </div>
-        //         \n                
-        //         <p>${postVariables.h2Intro}</p>
-        //         <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArrTitleCase)} "${postVariables.titleCaseName}"? </b></h3>
-        //             <p>Este vivero se ubica en ${postVariables.address}\n\n${spinnedText(comoLlegarArr)}<a href='${postVariables.urlgMaps}'>Mapa del ${spinnedText(typeOfPlaceArrTitleCase)} ${postVariables.titleCaseName}</a></p>
-        //         <h3><b>¿Cuáles son los contactos del vivero ${postVariables.titleCaseName}?</b></h3>
-        //             <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArrTitleCase)} ${postVariables.titleCaseName} son: </p>
-        //             <ul>
-        //                 <li><b>Teléfono:</b> ${postVariables.phone}</li>                                              
-        //                 <li><b>SitioWeb:</b> ${postVariables.web.toString().includes('no disponible')?
-        //                 'No se cuenta con web oficial disponible'
-        //                 :
-        //                 `<a href="${postVariables.web}">Web de ${postVariables.titleCaseName}</a>`
-        //                 }</li>                                
-        //             </ul>
-        //         <h3><b>¿En qué horarios y días se puede visitar el vivero ${postVariables.titleCaseName}?</b></h3>
-        //             <div>
-        //             ${postVariables.horario === 'No se cuenta con horario oficial' ? 
-        //                 `<p> Lamentablemente este sitio no cuenta con horarios publicados oficialmente, posiblemente se deba a que hay variaciones frecuentes o temporales en sus horarios de operación.</p> \n <p>En estos casos, lo más recomendable es que cerca de tu fecha de visita, eches un ojo a sus sitios oficiales o los llames directamente (por tel, whatsapp o FB) para preguntar los horarios vigentes.</p>`
-        //             :
-        //                 `<p>Los horarios oficiales del vivero ${postVariables.titleCaseName} son los siguientes:</p>                       
-        //                 <ul>
-        //                     <li>${postVariables.lunes}</li>
-        //                     <li>${postVariables.martes}</li>
-        //                     <li>${postVariables.miercoles}</li>
-        //                     <li>${postVariables.jueves}</li>
-        //                     <li>${postVariables.viernes}</li>
-        //                     <li>${postVariables.sabado}</li>
-        //                     <li>${postVariables.domingo}</li>
-        //                 </ul>
-        //                 <p>${spinnedText(aclaracionHorariosArr)}</p>`                                           
-        //             }</div>
-        //     `,
-
     }
 
     let photoScriptsObj = {
@@ -316,33 +214,33 @@ for (let place of jsonResults){
     coreContentArray.push(rankListObject)
     photoScripts.push(photoScriptsObj)
     canvaScripts.push(canvaScriptsObj)
+    tableOfContent.push(place.titleCaseName)
 }
 
-// let listofNames =[]
-// postVariablesArray.map((element, i) => {
-//     listofNames.push(`<li>${element.titleCaseName}</li>`)
-//     return listofNames
-// })
+//----------------- Table of contents construction ------------//
+let newTOC=[]
+tableOfContent.forEach(name =>{
+    let stringifiedName = name.toLowerCase()       
+    let noAccents = stringifiedName.normalize("NFD").replace(/\p{Diacritic}/gu,"")
+    let dashedName = noAccents.replace(/\s/ig,"-")
+    let noQuotation = dashedName.replace('""','')
+    let noParenthesisOpen = noQuotation.replace('(','')
+    let noParenthesisClose = noParenthesisOpen.replace(')','')
+    let finalInterlinkingId = noParenthesisClose.replace(/\n/ig,'')
+    let htmlEl = `<li><a href='#${finalInterlinkingId}'>${name}</a></li>`
+    let htmlElClean = htmlEl.trim()      
+    newTOC.push(htmlElClean)       
+})
 
-// h1Intros = [
-//     `¿Estás buscando opciones para hacer ecoturismo?, ¡llegaste al lugar correcto!, porque hoy vamos a mostrarte los resultados de nuestra investigación acerca de los mejores parques ecoturísticos en ${jsonResults[0].searchedCity}. \n\n Para definir esta lista de ganadores, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso algunas entrevistas directas. Este proceso nos permitió determinar cuáles son y en qué parte de ${jsonResults[0].searchedCity} se ubican los viveros que mejores experiencias han dado a sus visitantes y con mayor calificación durante los últimos años. \n\n Con todo esto como respaldo, hoy te compartimos la lista de los ganadores de este año junto con su ubicación, calificación promedio del lugar, medios oficiales de contacto, horarios y cómo llegar hasta ellos. \n\n Prepárate con esto y ¡a disfrutar del ecoturismo en ${jsonResults[0].searchedCity}!.`,
-//     `¿Eres entusiasta del ecoturismo y la naturaleza y andas por el sureste de México? Entonces ¡no te arrepentirás de quedarte por acá!. Pues hoy vamos a compartirte información sobre los mejores viveros en ${jsonResults[0].searchedCity}. \n\n Después de una exhaustiva investigación en varias fuentes, incluyendo redes sociales, rankings y entrevistas directas, hicimos una lista de los viveros de ${jsonResults[0].searchedCity} que más contentos han dejado a sus visitantes. \n\n Esta lista incluye información como la ubicación, calificación promedio del lugar,  medios oficiales de contacto, horarios y cómo llegar hasta allí.\n\n Así que, prepárate para disfrutar del ecoturismo en ${jsonResults[0].state} con la lista de ganadores de este año. ¡No se diga más!...\n\n`,
-//     `¿Estás buscando opciones para hacer ecoturismo?, ¡llegaste al lugar correcto!, porque hoy vamos a mostrarte los resultados de nuestra investigación acerca de los mejores parques ecoturísticos en ${jsonResults[0].state}. \n\n Para definir esta lista de ganadores, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso algunas entrevistas directas. Este proceso nos permitió determinar cuáles son y en qué parte de ${jsonResults[0].state} se ubican los viveros que mejores experiencias han dado a sus visitantes y con mayor calificación durante los últimos años. \n\n Con todo esto como respaldo, hoy te compartimos la lista de los ganadores de este año junto con su ubicación, calificación promedio del lugar, medios oficiales de contacto, horarios y cómo llegar hasta ellos. \n\n Prepárate con esto y ¡a disfrutar del ecoturismo en ${jsonResults[0].state}!.`,
-//     `¿Eres entusiasta del ecoturismo y la naturaleza y andas por el sureste de México? Entonces ¡no te arrepentirás de quedarte por acá!. Pues hoy vamos a compartirte información sobre los mejores viveros en ${jsonResults[0].state}. \n\n Después de una exhaustiva investigación en varias fuentes, incluyendo redes sociales, rankings y entrevistas directas, hicimos una lista de los viveros de ${jsonResults[0].state} que más contentos han dejado a sus visitantes. \n\n Esta lista incluye información como la ubicación, calificación promedio del lugar,  medios oficiales de contacto, horarios y cómo llegar hasta allí.\n\n Así que, prepárate para disfrutar del ecoturismo en ${jsonResults[0].state} con la lista de ganadores de este año. ¡No se diga más!...\n\n`,
-//     `¿Estás en ${jsonResults[0].state} y estás list@ para una aventura de ecoturismo a tope? ¡Pues hoy te tenemos cubierto/a!. Nuestro equipo  ha seleccionado los mejores viveros en ${jsonResults[0].state} para que no te falten opciones de naturaleza durante tu estancia por esta región.  \n\n Esta lista fué realizada en función de la satisfacción de sus visitantes previos, y la calidad y tipos de experiencia que ofrece cada lugar. \n\n Además de la lista, te compartiremos también detalles de cómo llegar a este lugar, sus horarios oficiales y vías de contacto. Así que ¡Prepárate para sumergirte en la naturaleza con nuestra lista de los viveros más destacados de ${jsonResults[0].state}!`,
-//     `¡Hola! ¡Qué emoción tenerte por acá con ganas de practicar algo de ecoturismo!... y es que, si estás buscando las mejores opciones para hacer ecoturismo en ${jsonResults[0].state}, entonces ¡has venido al lugar ideal!. \n\n Hemos investigado a fondo para encontrar los mejores viveros en ${jsonResults[0].state}, o por lo menos los mejor rankeados por sus visitantes. Desde paisajes increíbles hasta experiencias de aprendizaje en la naturaleza, no te faltará nada.  \n\n Además, para ayudarte a planear un viaje seguro, vamos a compartirte la ubicación, horarios, y medios de contacto de cada uno de estos lugares. Así es que sin más...¡Prepárate para explorar la belleza natural de ${jsonResults[0].state}!`,
-//     `¿Estás buscando buenas opciones de ecoturismoy naturaleza?, Pues hoy ¡tenemos muchas respuestas para ti!.\n\n  Nuestro equipo preparó una lista con los viveros en ${jsonResults[0].state} con mayor trayectoria y mejor calificación por parte de sus visitantes.  \n\n En esta lista encontrarás no solo las opciones de lugar sino también los detalles de cómo llegar, sus horarios vigentes y contactos oficiales para planear tu visita de manera exitosa.  \n\n Así que nada... si el ecoturismo es lo tuyo entonces ¡no se diga más! a sumergirte en la lista de los mejores viveros en ${jsonResults[0].state}  y a disfrutar al máximo la naturaleza de esta región.`,
-//     `¿Listo para una aventura de ecoturismo sin igual en ${jsonResults[0].state}? ¡pues aterrizaste en el lugar adecuado!. Hoy te vamos a ayudar a identificar los mejores viveros en ${jsonResults[0].state}, para que no te queden dudas ni pretextos para no salir a la naturaleza estos días. \n\n Esta lista fué preparada haciendo una clasificación detallada de los viveros con mejor calificación en redes sociales, medios digitales y testimonios oficiales de visitantes previos. Además de incluir las calificaciones oficiales que han recibido, incluye también las vías de contacto oficial de cada sitio, horarios vigentes y liga a mapas y detalles logísticos para llegar de manera segura a cada uno de ellos. \n\n Asi es que nada... toma nota y empieza a preparar tu visita, estamos seguras(os) de que luego de echar un ojo a esta lista, vas a querer salir a conocer estos viveros ¡desde ya!.`,
-//     `Si lo tuyo es el ecoturismo, pues llegaste al lugar ideal... porque ¡también es lo nuestro!, Y por eso hoy preparamos una lista bien detallada de las mejores opciones que existen de viveros en ${jsonResults[0].state}, para que no te quedes con ganas de salir a explorar los paisajes increíbles de esta región. Hemos investigado a fondo para identificar cuáles han sido los viveros mejor evaluados por sus visitantes anteriores a través de redes sociales, testimonios públicos, directorios de negocios y algunas entrevistas también. Además de esto, vamos a compartirte los datos de cada lugar, horarios vigentes, y enlaces a rutas logísticas para llegar fácilmente. ¡Así que no te quedes con las ganas! toma nota y ¡a disfrutar la naturaleza de ${jsonResults[0].state}!.`,
-//     `¡Hola hola! ¡Qué gusto tenerte hoy por acá añorando un poquito de naturaleza!. Y es que si estás buscando lugares naturales increíbles, entonces llegaste al lugar ideal. Hoy vamos a compartirte una lista con varios de los mejores viveros en ${jsonResults[0].state}, para que si de naturaleza se trata ¡no te falten opciones!. \n\nEsta lista la preparamos con mucha atención, indagando en medios digitales, redes sociales, testimonios públicos y con incluso algunas entrevistas para determinar cuáles han sido los viveros que mejor han sido evaluados en ${jsonResults[0].state}.  \n\nAdemás de compartirte la lista final de ganadores, hemos incluido también sus contactos oficiales, horarios vigentes y medios logísticos (ej. mapas) para que puedas encontrar el lugar fácilmente.  \n\nAsí que nada, sin más demora, toma nota y ¡a disfrutar a tope la naturaleza en ${jsonResults[0].state}!.`,
-// ]
-
+//----------------- final post production ------------//
 let finalPost = [{
     place: jsonResults[0].searchedCity,
     type: 'Viveros',
     title: `Viveros en ${jsonResults[0].searchedCity}: Los Mejores Viveros en ${jsonResults[0].searchedCity} ${jsonResults[0].searchedState}y alrededores.`,
     postIntro: `¡Hola y Bienvenid@ a esta Tierra de Plantas!. Si eres alguien amante de las plantas, estás buscando un buen vivero y vives en ${jsonResults[0].searchedCity}, ¡llegaste al lugar indicado!.\n\n
     En este artículo te presentaremos los mejores viveros en ${jsonResults[0].searchedCity}, para que puedas encontrar todo lo que necesitas para tu jardín o huerto. Además, te daremos detalles sobre la ubicación y vías de contacto de cada sitio, así como la calificación promedio que los clientes le han dado a cada uno. Así que prepárate para conocer los mejores viveros de esta ciudad y encontrar todo lo que necesitas para hacer crecer tus plantas con éxito. ¡Comencemos! `,
+    tableOfContent: `<h2>Los Mejores viveros de ${jsonResults[0].searchedCity}</h2><ul>${newTOC.join(' ').toString()}</ul>`,
+    slug: jsonResults[0].slug,   
     postNote: coreContentArray[0].postNote,
     placeRank1: coreContentArray[0].postContent,
     placeRank2: coreContentArray[1].postContent,
@@ -358,7 +256,7 @@ let finalPost = [{
     placeRank12: coreContentArray[11].postContent,
     placeRank13: coreContentArray[12].postContent,
     placeRank14: coreContentArray[13].postContent,
-    placeRank15: coreContentArray[14].postContent,
+    // placeRank15: coreContentArray[14].postContent,
     // placeRank16: coreContentArray[15].postContent,
     // placeRank17: coreContentArray[16].postContent,
     // placeRank18: coreContentArray[17].postContent,
@@ -368,13 +266,30 @@ let finalPost = [{
     // placeRank22: coreContentArray[21].postContent,
     // placeRank23: coreContentArray[22].postContent,
     //placeRank24: coreContentArray[23].postContent,
-    slug: jsonResults[0].slug,
+    outro:`
+    <h2 class="wp-block-heading has-ast-global-color-3-color has-text-color" id="mas-informacion-de-viveros-en-mexico">Más información de Viveros En México</h2>
+        <p>Esperamos que esta lista de los mejores viveros ${jsonResults[0].searchedCity} te haya sido útil y te ayude a encontrar el mejor sitio para adquirir tus plantas en esta ciudad. Si quieres conocer más viveros de México, no dudes en visitar nuestras listas de los mejores en diferentes ciudades del país. ¡Hasta pronto!</p>
+        <p class="has-text-align-center has-ast-global-color-1-background-color has-background"><strong>Otros artículos sobre viveros que podrían interesarte: </strong></p>
+        <div class="wp-block-columns">
+            <div class="wp-block-column" style="margin:10px;">
+                <figure class="wp-block-image size-full"><a href="https://tierradeplantas.com/que-es-un-vivero/"><img src="https://tierradeplantas.com/wp-content/uploads/2023/02/QueesunviveroFEATURED.jpg" alt="qué es un vivero" class="wp-image-672"/></a></figure>
+            </div>
+            <div class="wp-block-column" style="margin:10px;">
+                <figure class="wp-block-image size-full"><a href="https://tierradeplantas.com/viveros/viveros-en-campeche-campeche/"><img src="https://tierradeplantas.com/wp-content/uploads/2023/02/viveros_en_campeche_FEATURED.jpg" alt="viveros en campeche" class="wp-image-773"/></a></figure>
+            </div>
+            <div class="wp-block-column" style="margin:10px;">
+                <figure class="wp-block-image size-full"><a href="https://tierradeplantas.com/viveros/viveros-en-xalapa-veracruz/"><img src="https://tierradeplantas.com/wp-content/uploads/2023/02/viveros_en_xalapa_FEATURED.jpg" alt="viveros en xalapa y coatepec veracruz" class="wp-image-779"/></a></figure>
+            </div>    
+        <div>
+    `,
+   
 }]
 
 console.log(finalPost)
 // console.log(photoScripts)
 // console.log(canvaScripts)
 
+//----------------- Excel Files Creation ------------//
 const workbook = XLSX.utils.book_new()
 let worksheet = XLSX.utils.json_to_sheet(finalPost)
 let worksheet2 = XLSX.utils.json_to_sheet(photoScripts) 
@@ -383,7 +298,6 @@ XLSX.utils.book_append_sheet(workbook,worksheet,'postContent')
 XLSX.utils.book_append_sheet(workbook,worksheet2,'photoScripts')
 XLSX.utils.book_append_sheet(workbook,worksheet3,'canvaScripts')
 XLSX.writeFile(workbook, wbOutput)
-
 
 let stream = XLSX.stream.to_csv(worksheet3);
 stream.pipe(fs.createWriteStream(csvOutput));
