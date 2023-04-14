@@ -4,8 +4,8 @@ const { table } = require('console');
 
 // -----------download excel to json ----------------------------//
 
-const wbInput = 'viveros_queretaroQRO.xlsx'
-const wsInput = 'topFinal_queretaroQRO'
+const wbInput = 'viveros_rosaritoBC.xlsx'
+const wsInput = 'topFinal_rosaritoBC'
 const wbOutput = 'blogPostReady.xlsx'
 const csvOutput = 'Canva.csv';
 
@@ -251,11 +251,11 @@ let finalPost = [{
     placeRank7: coreContentArray[6].postContent,
     placeRank8: coreContentArray[7].postContent,
     placeRank9: coreContentArray[8].postContent,
-    placeRank10: coreContentArray[9].postContent,
-    placeRank11: coreContentArray[10].postContent,
-    placeRank12: coreContentArray[11].postContent,
-    placeRank13: coreContentArray[12].postContent,
-    placeRank14: coreContentArray[13].postContent,
+    // placeRank10: coreContentArray[9].postContent,
+    // placeRank11: coreContentArray[10].postContent,
+    // placeRank12: coreContentArray[11].postContent,
+    // placeRank13: coreContentArray[12].postContent,
+    // placeRank14: coreContentArray[13].postContent,
     // placeRank15: coreContentArray[14].postContent,
     // placeRank16: coreContentArray[15].postContent,
     // placeRank17: coreContentArray[16].postContent,
@@ -265,7 +265,7 @@ let finalPost = [{
     // placeRank21: coreContentArray[20].postContent,
     // placeRank22: coreContentArray[21].postContent,
     // placeRank23: coreContentArray[22].postContent,
-    //placeRank24: coreContentArray[23].postContent,
+    // placeRank24: coreContentArray[23].postContent,
     outro:`
     <h2 class="wp-block-heading has-ast-global-color-3-color has-text-color" id="mas-informacion-de-viveros-en-mexico">Más información de Viveros En México</h2>
         <p>Esperamos que esta lista de los mejores viveros ${jsonResults[0].searchedCity} te haya sido útil y te ayude a encontrar el mejor sitio para adquirir tus plantas en esta ciudad. Si quieres conocer más viveros de México, no dudes en visitar nuestras listas de los mejores en diferentes ciudades del país. ¡Hasta pronto!</p>

@@ -26,15 +26,15 @@ async function autoScroll(page,searchTerm){
 
 
 (async()=>{
-    let baseUrl = 'https://www.google.com.mx/maps/search/viveros+en+mexicali/@32.6109732,-115.5010151,12z/data=!4m2!2m1!6e6'
+    let baseUrl = 'https://www.google.com.mx/maps/search/viveros+cerca+de+Playa+del+Carmen,+Quintana+Roo/@20.6536338,-87.1476262,11z/data=!3m1!4b1'
     let totalResults = 120
-    let searchTerm = 'viveros en mexicali'
+    let searchTerm = 'viveros cerca de Playa del Carmen, Quintana Roo'
     let typeOfPlace = 'viveros'
-    let corePlace = 'mexicali'
-    let state = 'baja-california-norte'
+    let corePlace = 'playa-del-carmen'
+    let state = 'quintanaRoo'
     let slug = `${typeOfPlace}-en-${corePlace}-${state}`
-    let fileName = 'viveros_mexicaliBC.xlsx'
-    let sheetName = 'fullDB_mexicaliBC'
+    let fileName = 'viveros_playadelcarmenQROO.xlsx'
+    let sheetName = 'fullDB_playadelcarmenQROO'
     let targetWebsite = 'tierradeplantas.com'
 
     const browser = await puppeteer.launch({headless:false}) //slowMo: 300
@@ -170,6 +170,7 @@ async function autoScroll(page,searchTerm){
                 city = 'No cuenta con ciudad'
             }else if(bothPhAndWebMissing(missingDataArr)===false && onlyPhoneMissing(missingDataArr) === true && dataSize === 2){
                 phone = 'No cuenta con teléfono'
+               // web = document.querySelectorAll('a.CsEnBe')[0].href
                 web = document.querySelectorAll('a.CsEnBe')[1].href
                 address = 'No cuenta con dirección'
                 city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
@@ -369,7 +370,7 @@ async function autoScroll(page,searchTerm){
     }
     console.log('placesData:', placesData)
     console.log('Total de placesData:', placesData.length)
-    await browser.close()
+   // await browser.close()
 
     const workbook = XLSX.utils.book_new()
     let worksheet = XLSX.utils.json_to_sheet(placesData)
