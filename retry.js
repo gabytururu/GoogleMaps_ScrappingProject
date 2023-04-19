@@ -1,5 +1,6 @@
 const XLSX = require('xlsx');
 const fs = require('fs');
+const puppeteer = require('puppeteer');
 
 // -----------download excel to json ----------------------------//
 
@@ -16,7 +17,6 @@ console.log('jsonResult:', jsonResults)
 console.log('jsonResult Length:', jsonResults.length)
 console.log(jsonResults[0].titleCaseName)
 
-
 // ------------------------------general functions------------- //
 
 function spinnedText(textOptionsArr){
@@ -30,6 +30,7 @@ function h1IntroIndex_RepetitionOk(h1Intros){
 }
 
 let h2IntrosArr = []
+
 function h2IntroIndexArr_NoRepetition(h2Intros){
     let randomIndex = Math.floor(Math.random() * h2Intros.length)
     do{
@@ -110,12 +111,16 @@ let h1Intros = []
 
 let h2Intros = []
 
+
 //----------------- Blog post construction loop ------------//
 
 let postVariablesArray =[]
 let coreContentArray =[]
 let photoScripts =[]
 let canvaScripts = []
+let tableOfContent =[]
+let photoCredits=[]
+
 
 for (let place of jsonResults){
   
@@ -190,41 +195,54 @@ for (let place of jsonResults){
       
     }
 
+    function createhtmlNodeId(str){
+        let placeName = str.toLowerCase()
+        let noAccents = placeName.normalize("NFD").replace(/\p{Diacritic}/gu,"")
+        let dashedName = noAccents.replace(/\s/ig,"-")
+        let cleanFinalId = dashedName.replace('""','').replace('(','').replace(')','')
+        return cleanFinalId
+    }
+
     let rankListObject = {
-      
         rank: postVariables.rank,
         name: postVariables.name,
         postNote: `
         <p class="has-background" style="background-color:#af6bb054;font-size:15px">${postVariables.postNote}</p>
         `,
         postContent: `
-            <h2><b>#${postVariables.rank} ${spinnedText(typeOfPlaceArrTitleCase)} ${postVariables.titleCaseName}</b></h2>
-                <div class="wp-block-columns">
-                    <div class="wp-block-column">
+            <!-- wp:separator {"className":"is-style-dots"} -->
+            <hr class="wp-block-separator has-alpha-channel-opacity is-style-dots"/>
+            <!-- /wp:separator -->
+            <h2 id="${createhtmlNodeId(postVariables.titleCaseName)}"><b>#${postVariables.rank} ${spinnedText(typeOfPlaceArrTitleCase)} ${postVariables.titleCaseName}</b></h2>
+                <div class="wp-block-columns" style="padding:0px;">
+                    <div class="wp-block-column" style="margin:10px">
                         <figure class="wp-block-image"><img src="${postVariables.photoNewURL}" alt="${postVariables.name}"/></figure> 
                     </div>
-                    <div class="wp-block-column">                        
-                       <p>${postVariables.iframe}</p>
+                    <div class="wp-block-column" style="margin:10px">                        
+                       ${postVariables.iframe}
                     </div>
-                </div>
-                \n                
+                </div>                
                 <p>${postVariables.h2Intro}</p>
                 <h3><b>¿Cómo llegar al ${spinnedText(typeOfPlaceArrTitleCase)} "${postVariables.titleCaseName}"? </b></h3>
                     <p>Este ${spinnedText(typeOfPlaceArrlowerCase)} se ubica en ${postVariables.address}\n\n${spinnedText(comoLlegarArr)}<a href='${postVariables.urlgMaps}'>Mapa del ${spinnedText(typeOfPlaceArrTitleCase)} ${postVariables.titleCaseName}</a></p>
                 <h3><b>¿Cuáles son los contactos del ${spinnedText(typeOfPlaceArrlowerCase)} ${postVariables.titleCaseName}?</b></h3>
                     <p>Los contactos disponibles del ${spinnedText(typeOfPlaceArrTitleCase)} ${postVariables.titleCaseName} son: </p>
                     <ul>
-                        <li><b>Teléfono:</b> ${postVariables.phone}</li>                                              
+                        <li><b>Teléfono:</b> ${postVariables.phone.toString().includes('No cuenta')?
+                            'No se identificó ningún contacto oficial (vigente) para este centro ecoturístico.'
+                            :
+                            `El teléfono oficial de este centro ecoturístico es ${postVariables.phone}`}
+                        </li>                                              
                         <li><b>SitioWeb:</b> ${postVariables.web.toString().includes('no disponible')?
-                        'No se cuenta con web oficial disponible'
-                        :
-                        `<a href="${postVariables.web}">Web de ${postVariables.titleCaseName}</a>`
+                            'No se cuenta con web oficial disponible'
+                            :
+                            `<a href="${postVariables.web}">Web de ${postVariables.titleCaseName}</a>`
                         }</li>                                
                     </ul>
                 <h3><b>¿En qué horarios y días se puede visitar el ${spinnedText(typeOfPlaceArrlowerCase)} ${postVariables.titleCaseName}?</b></h3>
                     <div>
                     ${postVariables.horario === 'No se cuenta con horario oficial' ? 
-                        `<p> Lamentablemente este sitio no cuenta con horarios publicados oficialmente, posiblemente se deba a que hay variaciones frecuentes o temporales en sus horarios de operación.</p> \n <p>En estos casos, lo más recomendable es que cerca de tu fecha de visita, eches un ojo a sus sitios oficiales o los llames directamente (por tel, whatsapp o FB) para preguntar los horarios vigentes.</p>`
+                        `<p> Lamentablemente este sitio no cuenta con horarios publicados oficialmente, posiblemente se deba a que hay variaciones frecuentes o temporales en sus horarios de operación.</p> \n <p>En estos casos, lo más recomendable es que cerca de tu fecha de visita, eches un ojo a sus sitios oficiales o los llames directamente (por tel, whatsapp o FB proporcionados antes) y consultes horarios vigentes en ese momento.</p>`
                     :
                         `<p>Los horarios oficiales del ${spinnedText(typeOfPlaceArrlowerCase)} ${postVariables.titleCaseName} son los siguientes:</p>                       
                         <ul>
@@ -258,13 +276,59 @@ for (let place of jsonResults){
     coreContentArray.push(rankListObject)
     photoScripts.push(photoScriptsObj)
     canvaScripts.push(canvaScriptsObj)
+    tableOfContent.push(place.titleCaseName)
+    photoCredits.push(place.urlgMaps)
 }
 
-let listofNames =[]
-postVariablesArray.map((element, i) => {
-    listofNames.push(`<li>${element.titleCaseName}</li>`)
-    return listofNames
+//-------------------------------Getting Photo Credits -----------------------------//
+/// NEED TO FIGURE OUT HOW TO MOVE UP SO THAT THE PHOTOCREDIT CAN BE PART OF THE BLOG CONTENT OBJECT AS A TEMPLATESTRING IN THE HTML -- TRY TO DO IT USING A LOOP OVER THE JSONRESULTS.URLGMAPS INSTEAD OF THE OBJECT CREATION LOOP (PLACE--- URL OF PHOTOCREDIT)
+let photoCreditsArr = []
+async function getPhotoCredit(){
+    const browser = await puppeteer.launch({headless:false})
+    const page = await browser.newPage()
+    await page.setViewport({width:1300,height:900});
+
+    for(let url of photoCredits){
+    await page.goto(`${url}`, {waitUntil:'domcontentloaded'})
+    await page.waitForSelector('button.aoRNLd.kn2E5e.NMjTrf.lvtCsd')
+    await page.click('button.aoRNLd.kn2E5e.NMjTrf.lvtCsd')
+    //await page.waitForNavigation()
+    await page.waitForSelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf')
+    await page.waitForSelector ('.Uf0tqf.loaded')
+    await page.click('.Uf0tqf.loaded')[0]
+    await page.waitForSelector('.elqiBd')
+    const photoCredit = await page.$eval('span.elqiBd', el => el.innerText)
+    const photoYear = (await page.$eval('div.SAtV7', el => el.innerText)).replace('Foto - ','')
+    const fullPhotoCredit = `${photoCredit}, ${photoYear}`    
+
+    photoCreditsArr.push(fullPhotoCredit)
+}
+
+    await browser.close()
+
+}
+
+getPhotoCredit()
+console.log(photoCreditsArr)
+
+
+// ---------------- Creating Article Table of Content (TOC) -----------------------------//
+
+let finalTOC=[]
+tableOfContent.forEach(name =>{
+    let stringifiedName = name.toLowerCase()       
+    let noAccents = stringifiedName.normalize("NFD").replace(/\p{Diacritic}/gu,"")
+    let dashedName = noAccents.replace(/\s/ig,"-")
+    let noQuotation = dashedName.replace('""','')
+    let noParenthesisOpen = noQuotation.replace('(','')
+    let noParenthesisClose = noParenthesisOpen.replace(')','')
+    let finalInterlinkingId = noParenthesisClose.replace(/\n/ig,'')
+    let htmlEl = `<li><a href='#${finalInterlinkingId}'>${name}</a></li>`
+    let htmlElClean = htmlEl.trim()      
+    finalTOC.push(htmlElClean)    
 })
+
+//---------------- Final Post Creation ------------------------//
 
 h1Intros = [
     `¿Estás buscando opciones para hacer ecoturismo?, ¡llegaste al lugar correcto!, porque hoy vamos a mostrarte los resultados de nuestra investigación acerca de los mejores parques ecoturísticos en ${jsonResults[0].state}. \n\n Para definir esta lista de ganadores, realizamos consultas en un montón de fuentes oficiales, redes sociales, rankings e incluso algunas entrevistas directas. Este proceso nos permitió determinar cuáles son y en qué parte de ${jsonResults[0].state} se ubican los ${spinnedText(typeofPlaceLowerPlural)} que mejores experiencias han dado a sus visitantes y con mayor calificación durante los últimos años. \n\n Con todo esto como respaldo, hoy te compartimos la lista de los ganadores de este año junto con su ubicación, calificación promedio del lugar, medios oficiales de contacto, horarios y cómo llegar hasta ellos. \n\n Prepárate con esto y ¡a disfrutar del ecoturismo en ${jsonResults[0].state}!.`,
@@ -284,6 +348,7 @@ let finalPost = [{
     type: 'Parques Ecoturísticos',
     title: `Parques Ecoturísticos en ${jsonResults[0].state}: 15 Lugares Increibles para hacer Ecoturismo en ${jsonResults[0].state} y sus alrededores.`,
     postIntro: h1Intros[h1IntroIndex_RepetitionOk(h1Intros)],
+    postTOC: `<H2>Los Mejores Parques Ecoturísticos en ${jsonResults[0].state}</h2><ul>${finalTOC.join(' ').toString()}</ul>`,
     postNote: coreContentArray[0].postNote,
     placeRank1: coreContentArray[0].postContent,
     placeRank2: coreContentArray[1].postContent,
