@@ -26,14 +26,14 @@ async function autoScroll(page,searchTerm){
 
 
 (async()=>{
-    let baseUrl = 'https://www.google.com.mx/maps/search/reservas+naturales+en+Morelos+OR+parques+nacionales+en+Morelos/@18.791605,-99.2792529,10z/data=!3m1!4b1'
+    let baseUrl = 'https://www.google.com.mx/maps/search/%C3%A1rea+protegida+en+el+estado+de+Veracruz+OR+parque+Nacional+en+el+estado+de++veracruz/@18.7981569,-96.6853711,8z/data=!3m1!4b1'
     let totalResults = 120
-    let searchTerm = 'reservas naturales en Morelos OR parques nacionales en Morelos'
+    let searchTerm = 'área protegida en el estado de Veracruz OR parque Nacional en el estado de  veracruz'
     let typeOfPlace = 'Parque Ecoturístico'
-    let corePlace = 'Morelos'
-    let slug = 'parques-ecoturisticos-morelos'
-    let fileName = 'parquesEcoturismoMorelos_ANP.xlsx'
-    let sheetName = 'fullDB_MOR'
+    let corePlace = 'Veracruz'
+    let slug = 'parques-ecoturisticos-veracruz'
+    let fileName = 'parquesEcoturismoVeracruzANP.xlsx'
+    let sheetName = 'fullDB_ANP_VER'
     let targetWebsite = 'rumbonaturaleza.com'
     
    
@@ -98,7 +98,6 @@ async function autoScroll(page,searchTerm){
             }
             const lowerCaseName = lowerCase(placeName)
 
-
             const missingData= document.querySelectorAll('span.DkEaL')
             const missingDataArr=[]
             for(let dataPoint of missingData) {
@@ -106,93 +105,198 @@ async function autoScroll(page,searchTerm){
                     missingDataArr.push(missingDataList)
             };
 
-            function checkData (array){
+             //--------------original-------------//
+            // function checkData (array){
+            //     if(array.find(arrEl => arrEl.includes('teléfono'))){
+            //         resultPhone = true
+            //     }else {
+            //         resultPhone = false
+            //     }            
+            //     if (array.find(arrEl => arrEl.includes('web'))){
+            //         resultWeb = true
+            //     }else{
+            //     resultWeb = false
+            //     }            
+            //     if (resultPhone && resultWeb){
+            //         bothResults = true
+            //     }else {
+            //         bothResults = false
+            //     }
+
+            //     return bothResults
+            // }
+             //--------------original-------------//
+             function onlyPhoneMissing(array){
                 if(array.find(arrEl => arrEl.includes('teléfono'))){
                     resultPhone = true
                 }else {
                     resultPhone = false
-                }            
+                }         
+                return resultPhone
+            }
+    
+            function onlyWebMissing(array){
                 if (array.find(arrEl => arrEl.includes('web'))){
                     resultWeb = true
                 }else{
-                resultWeb = false
-                }            
+                    resultWeb = false
+                }     
+                return resultWeb      
+            }
+    
+            function bothPhAndWebMissing (array){
+               let resultPhone = onlyPhoneMissing(array)
+               let resultWeb = onlyWebMissing(array)
+                 
                 if (resultPhone && resultWeb){
                     bothResults = true
                 }else {
                     bothResults = false
                 }
-
                 return bothResults
             }
 
-            let dataSize = document.querySelectorAll('.Io6YTe.fontBodyMedium').length                
+            let dataSize = document.querySelectorAll('.Io6YTe.fontBodyMedium').length  
+             // -------NEW PROPOSED -----------///     
             if(document.querySelector('.Io6YTe.fontBodyMedium') === null){
-                    phone = 'No cuenta con teléfono'  
-                    web = 'Web no disponible'              
-                    address = 'No cuenta con dirección'
-                    city = 'No cuenta con ciudad'  
-            }else if(missingDataArr.find(missingData => missingData.includes('teléfono')) && missingDataArr.find(missingData => missingData.includes('web')) ){
-                    phone = 'No cuenta con teléfono'
-                    web = 'Web no disponible'
-                    address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
-                    city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent 
-            }else if (missingDataArr.find(missingData => missingData.includes('teléfono'))){
-                    phone = 'No cuenta con teléfono'
-                    address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
-                    web = document.querySelectorAll('a.CsEnBe')[1].href
-                    city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent 
-            }else if(missingDataArr.find(missingData => missingData.includes('web'))){
-                    web = 'Web no disponible'
-                    address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent 
-                    phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent  
-                    city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent 
-            }else if (dataSize <= 2){
-                    phone = 'no cuenta con teléfono'  
-                    web = 'Web no disponible'              
-                    address = 'no cuenta con dirección'
-                    city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent   
-            }else if(dataSize === 3 && checkData(missingDataArr) === false ){
-                    address= 'No cuenta con dirección'
-                    web = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent 
-                    phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent  
-                    city = 'no cuenta con ciudad'
-            }else {
-                    address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent 
-                    web = document.querySelectorAll('a.CsEnBe')[1].href
-                    phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent  
-                    city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[3].textContent 
-            };
-
-            function searchWeb(placeWeb){
-                if(placeWeb.includes('no disponible')){
-                    return 'web no disponible'                        
-                }else{
-                    return `<a href="${placeWeb}">Web del place ${placeInfo.name}</a>`
-                }                  
+                phone = 'No cuenta con teléfono'  
+                web = 'Web no disponible'              
+                address = 'No cuenta con dirección'
+                city = 'No cuenta con ciudad'  
+            }else if(bothPhAndWebMissing(missingDataArr) === true && dataSize === 1){
+                phone = 'No cuenta con teléfono'  
+                web = 'Web no disponible'              
+                address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+                city = 'No cuenta con ciudad'  
+            }else if(bothPhAndWebMissing(missingDataArr) === true && dataSize === 2){
+                phone = 'No cuenta con teléfono'  
+                web = 'Web no disponible'              
+                address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+                city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent  
+            }else if(bothPhAndWebMissing(missingDataArr) === true && dataSize >2){
+                phone = 'No cuenta con teléfono'  
+                web = 'Web no disponible'              
+                address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+                city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent  
+                //extra = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent  
+            }else if(bothPhAndWebMissing(missingDataArr)===false && onlyPhoneMissing(missingDataArr) === true && dataSize === 1){
+                phone = 'No cuenta con teléfono'  
+                web = document.querySelectorAll('a.CsEnBe')[1].href
+                address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+                city = 'No cuenta con ciudad'
+            }else if(bothPhAndWebMissing(missingDataArr)===false && onlyPhoneMissing(missingDataArr) === true && dataSize === 2){
+                phone = 'No cuenta con teléfono'
+               // web = document.querySelectorAll('a.CsEnBe')[0].href
+                web = document.querySelectorAll('a.CsEnBe')[1].href
+                address = 'No cuenta con dirección'
+                city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+            }else if(bothPhAndWebMissing(missingDataArr)===false && onlyPhoneMissing(missingDataArr) === true && dataSize > 2){
+                phone = 'No cuenta con teléfono'
+                web = document.querySelectorAll('a.CsEnBe')[1].href
+                address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+                city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent
+            }else if(bothPhAndWebMissing(missingDataArr)===false && onlyWebMissing(missingDataArr) === true && dataSize === 1){
+                phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+                web = 'Web no disponible' 
+                address = 'No cuenta con dirección'
+                city = 'No cuenta con ciudad'
+            }else if(bothPhAndWebMissing(missingDataArr)===false && onlyWebMissing(missingDataArr) === true && dataSize === 2){
+                phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent
+                web = 'Web no disponible' 
+                address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+                city = 'No cuenta con ciudad'
+            }else if(bothPhAndWebMissing(missingDataArr)===false && onlyWebMissing(missingDataArr) === true && dataSize > 2){
+                phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent
+                web = 'Web no disponible' 
+                address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+                city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent
+            }else if(onlyWebMissing(missingDataArr) === false && onlyPhoneMissing(missingDataArr) === false && dataSize === 2){
+                phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent
+                web = document.querySelectorAll('a.CsEnBe')[1].href
+                address = 'No cuenta con dirección'
+                city = 'No cuenta con ciudad'
+            }else if(onlyWebMissing(missingDataArr) === false && onlyPhoneMissing(missingDataArr) === false && dataSize === 3){
+                phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent
+                web = document.querySelectorAll('a.CsEnBe')[1].href
+                address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+                city = 'No cuenta con ciudad'
+            }else if(onlyWebMissing(missingDataArr) === false && onlyPhoneMissing(missingDataArr) === false && dataSize >= 4){
+                phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent
+                web = document.querySelectorAll('a.CsEnBe')[1].href
+                address = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+                city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[3].textContent   
+            }else{
+                phone = 'caso excepcional revisar caso'
+                web = 'caso excepcional revisar caso'
+                address = 'caso excepcional revisar caso'
+                city = 'caso excepcional revisar caso' 
             }
+            
+            //--------------original-------------//
+            // if(document.querySelector('.Io6YTe.fontBodyMedium') === null){
+            //         phone = 'No cuenta con teléfono'  
+            //         web = 'Web no disponible'              
+            //         address = 'No cuenta con dirección'
+            //         city = 'No cuenta con ciudad'  
+            // }else if(missingDataArr.find(missingData => missingData.includes('teléfono')) && missingDataArr.find(missingData => missingData.includes('web')) ){
+            //         phone = 'No cuenta con teléfono'
+            //         web = 'Web no disponible'
+            //         address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+            //         city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent 
+            // }else if (missingDataArr.find(missingData => missingData.includes('teléfono'))){
+            //         phone = 'No cuenta con teléfono'
+            //         address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent
+            //         web = document.querySelectorAll('a.CsEnBe')[1].href
+            //         city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent 
+            // }else if(missingDataArr.find(missingData => missingData.includes('web'))){
+            //         web = 'Web no disponible'
+            //         address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent 
+            //         phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent  
+            //         city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent 
+            // }else if (dataSize <= 2){
+            //         phone = 'no cuenta con teléfono'  
+            //         web = 'Web no disponible'              
+            //         address = 'no cuenta con dirección'
+            //         city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent   
+            // }else if(dataSize === 3 && checkData(missingDataArr) === false ){
+            //         address= 'No cuenta con dirección'
+            //         web = document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent 
+            //         phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[1].textContent  
+            //         city = 'no cuenta con ciudad'
+            // }else {
+            //         address= document.querySelectorAll('.Io6YTe.fontBodyMedium')[0].textContent 
+            //         web = document.querySelectorAll('a.CsEnBe')[1].href
+            //         phone = document.querySelectorAll('.Io6YTe.fontBodyMedium')[2].textContent  
+            //         city = document.querySelectorAll('.Io6YTe.fontBodyMedium')[3].textContent 
+            // };
+             //--------------originalENDS----------//
+
+            
+
+            // function searchWeb(placeWeb){
+            //     if(placeWeb.includes('no disponible')){
+            //         return 'web no disponible'                        
+            //     }else{
+            //         return `<a href="${placeWeb}">Web del place ${placeInfo.name}</a>`
+            //     }                  
+            // }
 
             if(missingDataArr.find(missingData => missingData.includes('foto'))|| document.querySelector('.aoRNLd.kn2E5e.NMjTrf.lvtCsd img') === null){
                 photo = 'no hay foto'
             }else{
                 photo = document.querySelector('.aoRNLd.kn2E5e.NMjTrf.lvtCsd img').currentSrc
             }
-
            
-            
-            
-            // placeInfo.photoNewName = `${placeInfo.name.replace(/\s/ig,'_')}_${acct}`
-            
-            
+            // placeInfo.photoNewName = `${placeInfo.name.replace(/\s/ig,'_')}_${acct}`           
             let photoFileName = photo.replace('https://lh5.googleusercontent.com/p/','')           
             photoFileName = photoFileName.replace('https://lh3.googleusercontent.com/gps-proxy/','')             
-            //let photoNewName = `${placeInfo.name.replace(/\s/ig,'_')}_${acct}`
-            const removeAccents = (str) => {
-               // let noAccents = str.normalize('NFD').replace(/[\u300-\u036f]/g,'')
-                let noAccents = str.normalize("NFD").replace(/\p{Diacritic}/gu, "")
-                return noAccents
+            
+            const removeAccents = (str) => {               
+                let noAccents = str.normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/,/ig,'').replaceAll('.','').replace('-','').replace('(','').replace(')','').replace(/\s\s/ig,' ').replace(/"/ig,'')
+                let cleanPhotoName = noAccents.toLowerCase()    
+                return cleanPhotoName
             }
-            let accentTest = 'holis estación de policía'
+            // let accentTest = 'holis estación de policía'
             //str.normalize("NFD").replace(/\p{Diacritic}/gu, "")
 
             let horarioArr =[]
@@ -203,7 +307,6 @@ async function autoScroll(page,searchTerm){
             }else{
                 horario.forEach(el => horarioArr.push(el.ariaLabel)) 
             }
-
 
             function cleanHorario(horarioArray){
 
@@ -245,7 +348,6 @@ async function autoScroll(page,searchTerm){
 
             if (cleanHorarioArray === 'No se cuenta con horario oficial'){
                 horarioOrganized = 'No se cuenta con horario oficial'
-
             }else {
                 horarioOrganized = {
                     lunes: cleanHorarioArray.find(el=>el.includes('Lunes')),
@@ -256,7 +358,6 @@ async function autoScroll(page,searchTerm){
                     sabado: cleanHorarioArray.find(el => el.includes('Sábado')),
                     domingo: cleanHorarioArray.find(el => el.includes('Domingo')),
                 }   
-
             }
 
             
@@ -275,8 +376,6 @@ async function autoScroll(page,searchTerm){
             }     
             //-------------CANTIDAD_RESEÑAS ENDS --------------//
 
-        
-                
                 placeInfo.name = placeName        
                 placeInfo.titleCaseName = titleCaseName        
                 placeInfo.lowerCaseName = lowerCaseName                
